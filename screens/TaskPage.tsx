@@ -32,7 +32,7 @@ const TaskPage = () => {
     return(
 
         <View style = {styles.MainContainer}>
-        <Image source = {require('./logo1.png')} style={{width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
+        <Image source = {require('../logo1.png')} style={{width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
 
         <View style={styles.TaskContainer}> 
         <Text style={styles.TaskName}>{taskname}</Text>
