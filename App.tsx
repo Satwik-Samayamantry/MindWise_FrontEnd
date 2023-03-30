@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/Ionicons';  
+
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 import LoginPage from './screens/LoginPage';
 import RegisterPage from './screens/RegisterPage';
 import QuestionnairePage from './screens/QuestionnairePage';
@@ -8,25 +12,81 @@ import SelectDoctor1 from './screens/SelectDoctor1';
 import SelectDoctor2 from './screens/SelectDoctor2';
 import DoctorPage from './screens/DoctorPage';
 import TaskPage from './screens/TaskPage';
-import NavBar from './screens/navbarex';
 
-const Stack = createNativeStackNavigator();
+import HomeScreen from './screens/HomePage';
+import NotificationsScreen from './screens/NotificationPage';
+import ProfileScreen from './screens/ProfilePage';
 
-const MyStack = () => {
+
+const HomeStack = createStackNavigator();
+
+
+
+const Tab = createBottomTabNavigator();
+
+const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="TabNavigator" component={NavBar} />
-        <Stack.Screen name="LoginPage" component={LoginPage}/>
-        <Stack.Screen name="RegisterPage" component={RegisterPage} />
-        <Stack.Screen name="QuestionnairePage" component={QuestionnairePage} />
-        <Stack.Screen name="SelectDoctor1" component={SelectDoctor1} />
-        <Stack.Screen name="SelectDoctor2" component={SelectDoctor2} />
-        <Stack.Screen name="DoctorPage" component={DoctorPage} />
-        <Stack.Screen name="TaskPage" component={TaskPage} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    // import { Ionicons } from '@expo/vector-icons';
+
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {backgroundColor: '#2F4052',borderTopWidth: 0},
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarActiveTintColor: '#2EEE9D',
+      }}>
+
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({color, size}) => (
+                <Icon style={[{color: color}]} size={30} name={'home'}/>  
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Nnotifications"
+        component={NotificationsScreen}
+        options={{
+          // tabBarBadge: 3,
+          // tabBarBadgeStyle: {backgroundColor: 'yellow'},
+          tabBarIcon: ({color, size}) => (
+                <Icon style={[{color: color}]} size={30} name={'notifications'}/>  
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({color, size}) => (
+                <Icon style={[{color: color}]} size={30} name={'person'}/>  
+          ),
+        }}
+      />
+    </Tab.Navigator>
+      );
 };
 
-export default MyStack;
+const screenStack = () => {
+  return(
+    <NavigationContainer>
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="App11" component={App}/>
+      <HomeStack.Screen name="LoginPage" component={LoginPage}/>
+      <HomeStack.Screen name="RegisterPage" component={RegisterPage} />
+      <HomeStack.Screen name="QuestionnairePage" component={QuestionnairePage} />
+      <HomeStack.Screen name="SelectDoctor1" component={SelectDoctor1} />
+      <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
+      <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
+      <HomeStack.Screen name="TaskPage" component={TaskPage} />
+    </HomeStack.Navigator>
+    </NavigationContainer>
+  )
+};
+
+
+  
+export default screenStack;
