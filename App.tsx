@@ -74,7 +74,6 @@ const screenStack = () => {
   return(
     <NavigationContainer>
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="App11" component={App}/>
       <HomeStack.Screen name="LoginPage" component={LoginPage}/>
       <HomeStack.Screen name="RegisterPage" component={RegisterPage} />
       <HomeStack.Screen name="QuestionnairePage" component={QuestionnairePage} />
@@ -82,6 +81,7 @@ const screenStack = () => {
       <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
       <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
       <HomeStack.Screen name="TaskPage" component={TaskPage} />
+      <HomeStack.Screen name="Home" component={App}/>
     </HomeStack.Navigator>
     </NavigationContainer>
   )

@@ -1,6 +1,7 @@
 import React, { useState  } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';  
 
 
 const { width, height } = Dimensions.get('window');
@@ -91,7 +92,8 @@ const LoginPage = () => {
                             {/* onPress = {() => connectToDevice(device)}> */}
         <View style={styles.buttonlist}>
 
-        <Image source = {require('../pp.jpg')} style={{width: 50, height: 70,left:10,resizeMode: 'contain'}}/>
+                <Icon style={[{color: 'black', left:15}]} size={40} name={'person-outline'}/>  
+        {/* <Image source = {require('../pp.jpg')} style={{width: 50, height: 70,left:10,resizeMode: 'contain'}}/> */}
         <View style={styles.buttonnames}>
                             <Text style={styles.ButtonText}>
                                 {doctor.name}

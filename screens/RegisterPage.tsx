@@ -110,7 +110,7 @@ const RegisterPage = ({navigation}) => {
                   placeholder="Gender"
                   underlineColorAndroid="#2F4052" // Set the underline color to blue
                 />
-          <TextInput
+          {/* <TextInput
                   style={styles.input}
                   onChangeText={setPhone}
                   value={phone}
@@ -137,7 +137,7 @@ const RegisterPage = ({navigation}) => {
                   value={proofno}
                   placeholder="Proof Number"
                   underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
+                /> */}
           <TextInput
                   style={styles.input}
                   onChangeText={setUsername}
