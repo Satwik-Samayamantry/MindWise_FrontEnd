@@ -20,17 +20,17 @@ const LoginPage = ({navigation}) => {
   const [password, setPassword] = useState('');
 
   const handleLogin =  () => {
-    axios.post(' https://e62e-2a09-bac1-3680-58-00-ca-86.in.ngrok.io/validate', {"username":username, "role":"Patient", "password" : password}
+    axios.post('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/validate', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       console.log(response.data)
       if(response.data)
       {
-        Alert.alert('Success', 'Login successful');
+        navigation.navigate('App');
+        // Alert.alert('Success', 'Login successful');
       }
       else
       {
         Alert.alert('Failed', 'Username/Password Incorrect');
-
       }
     }).catch((error) => {
       Alert.alert('Error', error.message);

@@ -14,11 +14,16 @@ const verticalScale = (size : number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
 
-const ProfilePage = () => {
+const ProfilePage = ({navigation}) => {
 
   const [oldPassword, setoldPassword] = useState('');
   const [newPassword, setnewPassword] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
+
+  const handleDeleteAcc = () => {
+      Alert.alert('Are you sure you want to Delete Account?', 'You lose all data related to your account.');
+
+  }
 
 
     return(
@@ -75,10 +80,12 @@ const ProfilePage = () => {
 
 
         <View>
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={handleDeleteAcc}>
                 <Text style={styles.highlight1}>Delete Account</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>navigation.navigate('LoginPage')}>
                 <Text style={styles.highlight2}>Logout</Text>
             </TouchableOpacity>
         </View>

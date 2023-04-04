@@ -1,4 +1,4 @@
-import React, { useState  } from 'react';
+import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import * as Progress from 'react-native-progress';
@@ -17,24 +17,18 @@ var progress = 49
 var taskstatus = 1
 
 
-const HomePage = () => {
+const HomePage = ({navigation}) => {
 
-    let exercise_data = [
-      {
-          "exerciseID": 1,
-          "defaultflag": 1,
-          "description": "Description of task1",
-          "type": "binary",
-          "ans": "value2"
-      },
-      {
-          "exerciseID": 12,
-          "defaultflag": 1,
-          "description": "value3",
-          "type": "etc",
-          "ans": "value2"
-      }
-  ];
+    const [exercise_data, setData] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await axios.get('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/exercises');
+        setData(result.data);
+      };
+
+      fetchData();
+    }, []);
     
     return(
       
@@ -96,10 +90,10 @@ const HomePage = () => {
               </TouchableOpacity>)}
 
 
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
   // onPress={() => navigation.navigate('RegisterPage')}
           >
-          <Text style={styles.chattext}>Chat with Doctor</Text></TouchableOpacity>
+          <Text style={styles.chattext}>Chat with Doctor</Text></TouchableOpacity> */}
 
 
       </View>

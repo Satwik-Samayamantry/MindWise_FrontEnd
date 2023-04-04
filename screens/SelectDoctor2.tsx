@@ -14,14 +14,16 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 
 
-const SelectDoctor2 = () => {
+const SelectDoctor2 = ({navigation}) => {
 
-  const handleYes = () => {
+  const handleManual = () => {
     console.log('Yes');
+    navigation.navigate('DoctorPage')
   };
 
-  const handleNo = () => {
+  const handleAuto = () => {
     console.log('No');
+    navigation.navigate('App')
   };
     
     return(
@@ -40,14 +42,14 @@ const SelectDoctor2 = () => {
         <View style ={styles.ButtonContainer}>
         <TouchableOpacity
         style={[styles.optionCard]}
-        onPress={handleYes}
+        onPress={handleManual}
       >
         <Text style={styles.buttonText}>Manual</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.optionCard]}
-        onPress={handleNo}
+        onPress={handleAuto}
       >
         <Text style={styles.buttonText}>Automatic</Text>
       </TouchableOpacity>

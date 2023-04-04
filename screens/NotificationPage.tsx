@@ -60,7 +60,7 @@ let doc_data = [
 ];
 
 
-const NotificationsPage = () => {
+const NotificationsPage = ({navigation}) => {
 
     return(
       

@@ -40,35 +40,35 @@ const RegisterPage = ({navigation}) => {
 
   const handleRegister =  () => {
 
-    axios.post(' https://e62e-2a09-bac1-3680-58-00-ca-86.in.ngrok.io/login', {"username":username, "role":"Patient", "password" : password}
+    axios.post('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/login', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
-      Alert.alert('Success', 'User registered successfully');
+      // Alert.alert('Success', 'User registered successfully');
       console.log(response.data)
+
+      axios.post('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/patient',
+      {
+        "name":name ,
+        "dob" : dob, 
+        "gender" :  gender, 
+        "phoneNo" : phone, 
+        "email" : email, 
+        "proofType" : prooftype, 
+        "proofNum" : proofno,
+        "username":username,
+        "status" :  1
+      }).then((response) => {
+        // Alert.alert('Success', 'User registered successfully');
+        console.log(response.data)
+        navigation.navigate('QuestionnairePage')
+      }).catch((error) => {
+        Alert.alert('Error', error.message);
+        console.log(error.message)
+      });
+
     }).catch((error) => {
       Alert.alert('Error', error.message);
       console.log(error.message)
     });
-
-    axios.post(' https://e62e-2a09-bac1-3680-58-00-ca-86.in.ngrok.io/patient',
-    {
-      "name":name ,
-      "dob" : dob, 
-      "gender" :  gender, 
-      "phoneNo" : phone, 
-      "email" : email, 
-      "proofType" : prooftype, 
-      "proofNum" : proofno,
-      "username":username,
-      "status" :  1
-    }).then((response) => {
-      Alert.alert('Success', 'User registered successfully');
-      console.log(response.data)
-    }).catch((error) => {
-      Alert.alert('Error', error.message);
-      console.log(error.message)
-    });
-
-    navigation.navigate('LoginPage')
 
   };
 

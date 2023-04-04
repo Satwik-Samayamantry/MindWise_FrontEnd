@@ -1,4 +1,4 @@
-import React, { useState  } from 'react';
+import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
@@ -15,66 +15,25 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 
 
-const LoginPage = () => {
+const DoctorPage = ({navigation}) => {
+
+    const [doc_data, setData] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await axios.get('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/doctors');
+        setData(result.data);
+      };
+
+      fetchData();
+    }, []);
 
 
-    // let doc_data;
-    let doc_data = [
-      {
-          "doctorID": 1,
-          "name": "Doctor1",
-          "dob": "1995-03-13",
-          "gender": "Male",
-          "phoneNo": "9876543210",
-          "email": "doctor1@gmail.com",
-          "proofType": "PAN",
-          "proofNum": "ZXCVB1234R",
-          "username": "doctor1",
-          "status": 1,
-          "registeredID": "R01",
-          "specialization": "S01"
-      },
-      {
-          "doctorID": 2,
-          "name": "Doctor2",
-          "dob": "1994-04-14",
-          "gender": "Female",
-          "phoneNo": "9876543210",
-          "email": "doctor2@gmail.com",
-          "proofType": "PAN",
-          "proofNum": "ZXCVB1234R",
-          "username": "doctor2",
-          "status": 1,
-          "registeredID": "R02",
-          "specialization": "S02"
-      },
-      {
-          "doctorID": 3,
-          "name": "Doctor3",
-          "dob": "1994-04-14",
-          "gender": "Female",
-          "phoneNo": "9876543210",
-          "email": "doctor3@gmail.com",
-          "proofType": "PAN",
-          "proofNum": "ZXCVB1234R",
-          "username": "doctor3",
-          "status": 1,
-          "registeredID": "R03",
-          "specialization": "S03"
-      }
-  ];
-    const funcall = () => {
-      axios.get('https://3ad9-2406-7400-45-783-c83c-6394-7ac5-c574.in.ngrok.io/doctors').then((response) => {
-              console.log(response.data);
-              doc_data = response.data;
-            
-            }).catch((error) => {
-              Alert.alert('Error', error.message);
-              console.log(error.message)
-            });;
+    const handleButtonPress = (doctorName) => {
+      console.log(doctorName);
+      navigation.navigate('App')
     };
-    
-    // const x = funcall();
+  
 
     return(
       
@@ -88,12 +47,11 @@ const LoginPage = () => {
         {doc_data.map(doctor => 
                             <TouchableOpacity
                             key = {doctor.name}
-                            style={styles.doctorbutton}>
-                            {/* onPress = {() => connectToDevice(device)}> */}
+                            style={styles.doctorbutton}
+                            onPress = {() => handleButtonPress(doctor.name)}>
         <View style={styles.buttonlist}>
 
                 <Icon style={[{color: 'black', left:15}]} size={40} name={'person-outline'}/>  
-        {/* <Image source = {require('../pp.jpg')} style={{width: 50, height: 70,left:10,resizeMode: 'contain'}}/> */}
         <View style={styles.buttonnames}>
                             <Text style={styles.ButtonText}>
                                 {doctor.name}
@@ -200,4 +158,4 @@ const styles = StyleSheet.create(
   
 });
 
-export default LoginPage;
+export default DoctorPage;

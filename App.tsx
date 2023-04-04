@@ -26,8 +26,6 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    // import { Ionicons } from '@expo/vector-icons';
-
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
@@ -47,11 +45,9 @@ const App = () => {
         }}
       />
       <Tab.Screen
-        name="Nnotifications"
+        name="Notifications"
         component={NotificationsScreen}
         options={{
-          // tabBarBadge: 3,
-          // tabBarBadgeStyle: {backgroundColor: 'yellow'},
           tabBarIcon: ({color, size}) => (
                 <Icon style={[{color: color}]} size={30} name={'notifications'}/>  
           ),
@@ -81,7 +77,7 @@ const screenStack = () => {
       <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
       <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
       <HomeStack.Screen name="TaskPage" component={TaskPage} />
-      <HomeStack.Screen name="Home" component={App}/>
+      <HomeStack.Screen name="App" component={App}/>
     </HomeStack.Navigator>
     </NavigationContainer>
   )

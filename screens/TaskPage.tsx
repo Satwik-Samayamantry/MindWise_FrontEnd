@@ -17,7 +17,7 @@ var tasktext = "Description of Task 1 will be displayed here.Description of Task
 var taskquestion = "question111 ?";
 var optionslist = ['yes','no']
 
-const TaskPage = () => {
+const TaskPage = ({navigation}) => {
 
   const handleYes = () => {
     console.log('Yes');

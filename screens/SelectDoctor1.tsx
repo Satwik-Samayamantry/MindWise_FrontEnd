@@ -1,6 +1,7 @@
 import React, { useState  } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import { NavigationActions } from 'react-navigation';
 
 
 const { width, height } = Dimensions.get('window');
@@ -14,14 +15,16 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 
 
-const SelectDoctor1 = () => {
+const SelectDoctor1 = ({navigation}) => {
 
   const handleYes = () => {
     console.log('Yes');
+    navigation.navigate('SelectDoctor2')
   };
 
   const handleNo = () => {
     console.log('No');
+    navigation.navigate('App')
   };
     
     return(
