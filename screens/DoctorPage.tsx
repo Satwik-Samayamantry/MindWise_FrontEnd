@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
+import {UserContext, UserContextProvider} from '../global/UserContext';
 
 
 const { width, height } = Dimensions.get('window');
@@ -18,10 +19,11 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 const DoctorPage = ({navigation}) => {
 
     const [doc_data, setData] = useState([]);
+    const {user,setUser} = useContext(UserContext);
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/doctors');
+        const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/doctors');
         setData(result.data);
       };
 
@@ -29,8 +31,23 @@ const DoctorPage = ({navigation}) => {
     }, []);
 
 
-    const handleButtonPress = (doctorName) => {
-      console.log(doctorName);
+    const handleButtonPress = (doctorId) => {
+      axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/assign-doctor', {"doctorID": doctorId, "patientID": user?.patientID, "summary": null}
+    ).then((response) => {
+      console.log(response.data)
+      if(response.data)
+      {
+        navigation.navigate('App');
+        // Alert.alert('Success', 'Login successful');
+      }
+      else
+      {
+        Alert.alert('Failed', 'Network Error');
+      }
+    }).catch((error) => {
+      Alert.alert('Error', error.message);
+      console.log(error.message)
+    }); 
       navigation.navigate('App')
     };
   
@@ -48,7 +65,7 @@ const DoctorPage = ({navigation}) => {
                             <TouchableOpacity
                             key = {doctor.name}
                             style={styles.doctorbutton}
-                            onPress = {() => handleButtonPress(doctor.name)}>
+                            onPress = {() => handleButtonPress(doctor.doctorID)}>
         <View style={styles.buttonlist}>
 
                 <Icon style={[{color: 'black', left:15}]} size={40} name={'person-outline'}/>  

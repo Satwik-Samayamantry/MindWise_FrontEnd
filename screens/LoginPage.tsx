@@ -1,7 +1,9 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
-
+import {UserContext, UserContextProvider} from '../global/UserContext';
+import {storeData,getData,deleteData} from '../global/LocalStore'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,14 +21,18 @@ const LoginPage = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const {user,setUser} = useContext(UserContext);
+
   const handleLogin =  () => {
-    axios.post('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/validate', {"username":username, "role":"Patient", "password" : password}
+    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/validate', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
-      console.log(response.data)
-      if(response.data)
+      
+      if(response.data != null && response.data != "")
       {
+        console.log(response.data)
+        setUser(response.data);
+        storeData('user',response.data);
         navigation.navigate('App');
-        // Alert.alert('Success', 'Login successful');
       }
       else
       {
@@ -35,7 +41,10 @@ const LoginPage = ({navigation}) => {
     }).catch((error) => {
       Alert.alert('Error', error.message);
       console.log(error.message)
-    });  }
+    });
+  
+  
+  }
 
 
     return(
@@ -84,7 +93,7 @@ const LoginPage = ({navigation}) => {
           </Text>
         {/* </TouchableOpacity> */}
 
-
+        {/* <Text>{userID}</Text> */}
         </View>
       </View>
     );

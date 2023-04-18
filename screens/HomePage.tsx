@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import * as Progress from 'react-native-progress';
+import {UserContext, UserContextProvider} from '../global/UserContext';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 
 
 const { width, height } = Dimensions.get('window');
@@ -12,7 +14,6 @@ const guidelineBaseHeight = 800;
 const horizontalScale = (size : number ) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size : number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
-var name = "John"
 var progress = 49
 var taskstatus = 1
 
@@ -20,11 +21,22 @@ var taskstatus = 1
 const HomePage = ({navigation}) => {
 
     const [exercise_data, setData] = useState([]);
-
+    const {user,setUser} = useContext(UserContext);
+    
+    useEffect(()=>{
+      const fetchUserData = async () => {
+        const data1 = await getData('user');
+        // console.log(data1)
+        setUser(data1);
+      };
+      fetchUserData()  
+    },[])
+    
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get('https://ba4e-2a09-bac5-3b4f-7eb-00-ca-7f.in.ngrok.io/exercises');
+        const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/exercises');
         setData(result.data);
+        // console.log(userData)
       };
 
       fetchData();
@@ -34,7 +46,8 @@ const HomePage = ({navigation}) => {
       
       <View style = {styles.MainContainer}>
         <Image source = {require('../logo1.png')} style={{ width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
-        <Text style={styles.startText}> Hey, {name} !!</Text>
+        <Text style={styles.startText}> Hey, {user?.name} !!</Text>
+        {/* <Text style={styles.startText}> Hey, !!</Text> */}
 
         <View style={styles.rect}>
           <Text style={styles.questext}> How are you today?</Text>

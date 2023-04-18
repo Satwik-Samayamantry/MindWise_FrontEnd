@@ -1,6 +1,7 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import {UserContext, UserContextProvider} from '../global/UserContext';
 
 
 const { width, height } = Dimensions.get('window');
@@ -16,6 +17,19 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 const SelectDoctor2 = ({navigation}) => {
 
+  const [doc_data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/doctors');
+      setData(result.data);
+    };
+
+    fetchData();
+  }, []);
+
+
+
   const handleManual = () => {
     console.log('Yes');
     navigation.navigate('DoctorPage')
@@ -23,8 +37,29 @@ const SelectDoctor2 = ({navigation}) => {
 
   const handleAuto = () => {
     console.log('No');
-    navigation.navigate('App')
+    const doctor = doc_data[  
+      Math.floor(Math.random() * doc_data.length)
+    ]
+
+    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}
+    ).then((response) => {
+      console.log(response.data)
+      if(response.data)
+      {
+        navigation.navigate('App');
+        // Alert.alert('Success', 'Login successful');
+      }
+      else
+      {
+        Alert.alert('Failed', 'Network Error');
+      }
+    }).catch((error) => {
+      Alert.alert('Error', error.message);
+      console.log(error.message)
+    }); 
+    
   };
+  const {user,setUser} = useContext(UserContext);
     
     return(
       

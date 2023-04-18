@@ -1,7 +1,9 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
-import * as Progress from 'react-native-progress';
+import {UserContext, UserContextProvider} from '../global/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 
 
 const { width, height } = Dimensions.get('window');
@@ -16,15 +18,41 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 const ProfilePage = ({navigation}) => {
 
-  const [oldPassword, setoldPassword] = useState('');
-  const [newPassword, setnewPassword] = useState('');
-  const [confirmPassword, setconfirmPassword] = useState('');
+    const [oldPassword, setoldPassword] = useState('');
+    const [newPassword, setnewPassword] = useState('');
+    const [confirmPassword, setconfirmPassword] = useState('');
+    const {user,setUser} = useContext(UserContext);
 
-  const handleDeleteAcc = () => {
-      Alert.alert('Are you sure you want to Delete Account?', 'You lose all data related to your account.');
+    const handleDeleteAcc = () => {
+        Alert.alert('Are you sure you want to Delete Account?', 'You lose all data related to your account.');
 
-  }
+    }
+    
 
+    const handleLogout = () => {
+      deleteData('user');
+      setUser(null);
+      navigation.navigate('LoginPage')
+    }
+
+    const handleSubmit = () => {
+      console.log(user.username)
+      console.log(oldPassword)
+      console.log(newPassword)
+      axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/updatePassword', {"username":user.username, "role":"Patient", "oldpassword" : oldPassword, "newpassword" : newPassword}
+      ).then((response) => {
+        if(response.data)
+        {
+          Alert.alert('Success', 'Password Update Change');
+        }
+        else
+        {
+          Alert.alert('Failed', 'Password Update Failed');
+        }
+      }).catch((error) => {
+        Alert.alert('Error', error.message);
+        console.log(error.message)
+      });    }
 
     return(
       
@@ -34,14 +62,14 @@ const ProfilePage = ({navigation}) => {
         <Text style={styles.startText}> Profile</Text>
 
         <View style={styles.fieldview}>
-        <Text style={styles.detailsText}> Name : John</Text>
+        <Text style={styles.detailsText}> Name : {user?.name}</Text>
         </View>
         <View style={styles.fieldview}>
-        <Text style={styles.detailsText}> DOB : 23/05/1996</Text>
+        <Text style={styles.detailsText}> DOB : {user?.dob} </Text>
         </View>
 
         <View style={styles.fieldview}>
-        <Text style={styles.detailsText}> Gender : Male</Text>
+        <Text style={styles.detailsText}> Gender : {user?.gender} </Text>
         </View>
 
         <Text style={styles.startText}> Update Password</Text>
@@ -71,7 +99,7 @@ const ProfilePage = ({navigation}) => {
         <View style={styles.buttonContainer}>
         <TouchableOpacity
             style={styles.button}
-            // onPress={handleLogin}
+            onPress={handleSubmit}
             // disabled={!isChecked}
           >
             <Text style={styles.buttonText}>Submit</Text>
@@ -85,7 +113,7 @@ const ProfilePage = ({navigation}) => {
                 <Text style={styles.highlight1}>Delete Account</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={()=>navigation.navigate('LoginPage')}>
+              onPress={handleLogout}>
                 <Text style={styles.highlight2}>Logout</Text>
             </TouchableOpacity>
         </View>
