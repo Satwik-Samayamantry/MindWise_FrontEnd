@@ -72,14 +72,7 @@ const AuthStack = (user, authenticatedComponent, unauthenticatedComponent) => {
 
 }
 
-const AuthStack1 = (user, authenticatedComponent, unauthenticatedComponent) => {
-    return user ? unauthenticatedComponent : authenticatedComponent;
-
-}
-
-
 const ScreenStack = () => {
-
   const {user,setUser} = useContext(UserContext);
 
   useEffect(()=>{
@@ -100,87 +93,19 @@ const ScreenStack = () => {
 
 
   return(
-    // <UserContextProvider>
       <NavigationContainer>
         <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-          {/* {user != null ?
-          (<HomeStack.Screen name="App" component={App}/>) :
-          (<HomeStack.Screen name="LoginPage" component={LoginPage}/>) 
-          } */}
-          
           <HomeStack.Screen name="AuthPage" component={AuthStack(user,App,LoginPage)} />
-          <HomeStack.Screen name="AuthPage1" component={AuthStack1(user,App,LoginPage)} />
+          <HomeStack.Screen name="AuthPage1" component={AuthStack(user,LoginPage,App)} />
           <HomeStack.Screen name="RegisterPage" component={RegisterPage} />
           <HomeStack.Screen name="QuestionnairePage" component={QuestionnairePage} />
           <HomeStack.Screen name="SelectDoctor1" component={SelectDoctor1} />
           <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
           <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
           <HomeStack.Screen name="TaskPage" component={TaskPage} />
-          {/* {user != null ? 
-          (<HomeStack.Screen name="LoginPage" component={LoginPage}/>) :
-          (<HomeStack.Screen name="App" component={App}/>) 
-          } */}
-        {/* //   <HomeStack.Screen name="App" component={App}/> */}
         </HomeStack.Navigator>
       </NavigationContainer>
-    // </UserContextProvider>
   )
 };
 
-// const MainApp = () => {
-//   return(
-//     <UserContextProvider>
-//       <screenStack/>
-
-//     </UserContextProvider>
-
-//   )
-
-// };
-
-
-
-  
 export default ScreenStack;
-
-
-
-
-// import React, { useState } from 'react';
-// import { View, TextInput, TouchableOpacity, Text } from 'react-native';
-// import DatePicker from 'react-native-date-picker';
-
-// const MyDatePicker = () => {
-//   const [date, setDate] = useState(new Date());
-  // const [showDatePicker, setShowDatePicker] = useState(false);
-
-//   const onDateChange = (selectedDate) => {
-//     setDate(selectedDate);
-//   };
-
-//   const toggleDatePicker = () => {
-//     setShowDatePicker(!showDatePicker);
-//   };
-
-//   return (
-//     <View>
-//       <TouchableOpacity onPress={toggleDatePicker}>
-//         <Text>Select Date</Text>
-//       </TouchableOpacity>
-//       {showDatePicker && (
-        // <DatePicker
-        //   date={date}
-        //   onDateChange={onDateChange}
-        //   mode="date"
-        //   androidVariant="nativeAndroid"
-        // />
-//       )}
-//       <TextInput
-//         value={date.toDateString()} // Display the selected date in the TextInput
-//         editable={false} // Disable editing of TextInput
-//       />
-//     </View>
-//   );
-// };
-
-// export default MyDatePicker;

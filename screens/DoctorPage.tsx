@@ -3,6 +3,7 @@ import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, 
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
 import {UserContext, UserContextProvider} from '../global/UserContext';
+import '../global/ngrok.js'
 
 
 const { width, height } = Dimensions.get('window');
@@ -23,7 +24,7 @@ const DoctorPage = ({navigation}) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/doctors');
+        const result = await axios.get(global.ngroklink+'/doctors');
         setData(result.data);
       };
 
@@ -32,7 +33,7 @@ const DoctorPage = ({navigation}) => {
 
 
     const handleButtonPress = (doctorId) => {
-      axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/assign-doctor', {"doctorID": doctorId, "patientID": user?.patientID, "summary": null}
+      axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctorId, "patientID": user?.patientID, "summary": null}
     ).then((response) => {
       console.log(response.data)
       if(response.data)

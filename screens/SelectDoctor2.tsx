@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
+import '../global/ngrok.js'
 
 
 const { width, height } = Dimensions.get('window');
@@ -21,7 +22,7 @@ const SelectDoctor2 = ({navigation}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/doctors');
+      const result = await axios.get(global.ngroklink+'/doctors');
       setData(result.data);
     };
 
@@ -41,7 +42,7 @@ const SelectDoctor2 = ({navigation}) => {
       Math.floor(Math.random() * doc_data.length)
     ]
 
-    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}
+    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}
     ).then((response) => {
       console.log(response.data)
       if(response.data)

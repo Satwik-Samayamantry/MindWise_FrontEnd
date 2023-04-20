@@ -4,8 +4,9 @@ import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import {storeData,getData,deleteData} from '../global/LocalStore'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import '../global/ngrok.js'
 const { width, height } = Dimensions.get('window');
+import Icon from 'react-native-vector-icons/Ionicons';  
 
 const guidelineBaseWidth = 360;
 const guidelineBaseHeight = 800;
@@ -23,8 +24,15 @@ const LoginPage = ({navigation}) => {
 
   const {user,setUser} = useContext(UserContext);
 
+  const [hidepassword,sethidepassword] = useState(true)
+
+  const handleEye = () =>
+  {
+    sethidepassword(!hidepassword)
+  }
+
   const handleLogin =  () => {
-    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/validate', {"username":username, "role":"Patient", "password" : password}
+    axios.post(global.ngroklink+'/validate', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       
       if(response.data != null && response.data != "")
@@ -62,19 +70,30 @@ const LoginPage = ({navigation}) => {
           <Text style = {styles.heading}>MindWise </Text>
 
           <TextInput
-                  style={styles.input}
+                  style={styles.input1}
                   onChangeText={setUsername}
                   value={username}
                   placeholder="Username"
                   underlineColorAndroid="#2F4052" // Set the underline color to blue
                 />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setPassword}
-                  value={password}
-                  placeholder="Password"
-                  underlineColorAndroid="#2F4052" 
-                />
+          
+          <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input2}
+                    onChangeText={setPassword}
+                    value={password}
+                    placeholder="Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
+                
                 
           <TouchableOpacity
             style={styles.button}
@@ -84,16 +103,12 @@ const LoginPage = ({navigation}) => {
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity> */}
           <Text style={styles.signuptext}>
             Don't have an account?{' '}
             <TouchableOpacity onPress={() =>
         navigation.navigate('RegisterPage')
       }><Text style={styles.highlight}>Register here</Text></TouchableOpacity>
           </Text>
-        {/* </TouchableOpacity> */}
-
-        {/* <Text>{userID}</Text> */}
         </View>
       </View>
     );
@@ -143,7 +158,7 @@ const styles = StyleSheet.create(
       alignItems: 'center',
     },
 
-    input: {
+    input1: {
       height: 40,
       width: '70%',
       paddingHorizontal: 10,
@@ -152,6 +167,17 @@ const styles = StyleSheet.create(
       padding: 10,
       borderRadius: 5,
     },
+
+    input2: {
+      height: 40,
+      width: '65%',
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      marginBottom: 10,
+      padding: 10,
+      borderRadius: 5,
+    },
+
   
     button: {
       backgroundColor: '#2F4052',
@@ -176,6 +202,17 @@ const styles = StyleSheet.create(
     highlight: {
       color: '#2EEE9D',
     },
+
+    passwordView: {
+      // backgroundColor: '#16202A',
+      // width: '100%',
+      // borderRadius: 8,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      // borderWidth: 4,
+      // borderColor: '#16202A'
+      },
   
   
 });

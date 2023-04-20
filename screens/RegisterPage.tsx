@@ -4,9 +4,10 @@ import CheckBox from '@react-native-community/checkbox';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import {storeData,getData,deleteData} from '../global/LocalStore'
-import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/Ionicons';  
 import DatePicker from 'react-native-date-picker'
-import {Button} from 'react-native'
+import '../global/ngrok.js'
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,60 +22,66 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 const RegisterPage = ({navigation}) => {
 
-  const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
-
-  const [name, setName] = useState('');
-  const [dob, setDob] = useState('');
-  const [gender, setGender] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [prooftype, setProoftype] = useState('');
   const [proofno, setProofno] = useState('');
+
+
+  const [name, setName] = useState('');
+  const [dob, setDob] = useState('');
+  const [date, setDate] = useState(new Date())
+  const [gender, setGender] = useState('Gender');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmPassword] = useState('');
 
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const onDateChange = (selectedDate) => {
-    setDate(selectedDate);
-  };
-
-  const toggleDatePicker = () => {
-    setShowDatePicker(!showDatePicker);
-  };
+  const [open, setOpen] = useState(false)
+  const [dobgiven, setdobgiven] = useState(false)
+  let genderOptions = ["Male", "Female", "Other"];
+  const [genderselected,setgenderselected] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
   const status = 1 ;
 
   const {user,setUser} = useContext(UserContext);
 
-  const [genderOption, setGenderOption] = useState('');
 
-  // const gender_options = [
-  //   { label: 'Male', value: 'Male' },
-  //   { label: 'Female', value: 'Female' },
-  //   { label: 'Other', value: 'Other' },
-  // ];
+  const handleDate = (selectedDate) => {
+    let date = selectedDate.getDate()
+    let month = selectedDate.getMonth()+1
+    let year = selectedDate.getFullYear()
+    setDob(year+'-'+month+'-'+date);
+    setDate(selectedDate)
+    setdobgiven(true)
+    console.log(dob)
+    // console.log(selectedDate.getDate())
+    // console.log(selectedDate.getMonth())
+    // console.log(selectedDate.getFullYear())
+  }
 
-  const gender_options = ["Male", "Female", "Other"];
+  const showOptions = () => {
+      setIsVisible(!isVisible)
+  }
 
-
+  const handleGender = (selectedGender) => {
+    showOptions();
+    setGender(selectedGender);
+    setgenderselected(true);
+  }
   const handleCheckbox = () => {
     setIsChecked(!isChecked);
   };
 
-
-
   const handleRegister =  () => {
 
-    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/login', {"username":username, "role":"Patient", "password" : password}
+    axios.post(global.ngroklink+'/login', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       // Alert.alert('Success', 'User registered successfully');
       // console.log(response.data)
 
-      axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/patient',
+      axios.post(global.ngroklink+'/patient',
       {
         "name":name ,
         "dob" : dob, 
@@ -106,7 +113,7 @@ const RegisterPage = ({navigation}) => {
 
 
     return(
-      <View style = {styles.MainContainer}>
+      <ScrollView style = {styles.MainContainer}>
         
         <View style={styles.rectangleup}>
         </View>
@@ -127,101 +134,53 @@ const RegisterPage = ({navigation}) => {
 
                 />
 
-          {/* <View style={styles.dateView}>
-            <TextInput
-                    style={styles.dateinput}
-                    onChangeText={setDob}
-                    // value={date}
-                    placeholder="DOB"
-                    underlineColorAndroid="#2F4052" // Set the underline color to blue
-                    value={date.toDateString()} // Display the selected date in the TextInput
-                    editable={false}
-                  />
-            
-            <TouchableOpacity style={styles.datebutton} onPress={toggleDatePicker}>
-              <Text style={styles.datebuttonText}>Select Date</Text>
+{/* --------------------------------------------------------------------------------------------- */}
+
+          <TouchableOpacity
+            style = {styles.dropdown}
+            onPress={()=>setOpen(true)}>
+              <View style={styles.dropdownView}>
+                  <Text style = {[styles.dropdownText ]}> {dobgiven ? dob : "DOB"} </Text>
+                  <Icon style={[{color: 'gray',alignContent : "flex-end", marginRight : 10}]} size={15} name={"calendar"}/>  
+              </View>
+          </TouchableOpacity>
+
+          <DatePicker
+            modal
+            open={open}
+            date={date}
+            mode="date"
+            onConfirm={(date) => {
+              setOpen(false)
+              handleDate(date)
+            }}
+            onCancel={() => {
+              setOpen(false)
+            }}
+          />
+
+{/* --------------------------------------------------------------------------------------------- */}
+          <TouchableOpacity
+          style = {styles.dropdown}
+          onPress={showOptions}>
+            <View style={styles.dropdownView}>
+                <Text style = {[styles.dropdownText ,{color : genderselected ? 'white' : 'gray'}]}> {gender} </Text>
+                <Icon style={[{color: 'gray', alignContent : "flex-end", marginRight : 10}]} size={15} name={isVisible ? 'caret-up' : 'caret-down'}/>  
+            </View>
             </TouchableOpacity>
-
-            <DatePicker
-                modal
-                open={showDatePicker}
-                date={date}
-                mode="date"
-                onConfirm={(date) => {
-                  toggleDatePicker()
-                  setDate(date)
-                }}
-                onCancel={() => {
-                  toggleDatePicker()
-                }}
-              />
-
-          </View> */}
-
-
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setDob}
-                  value={dob}
-                  placeholder="DOB"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
           
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setGender}
-                  value={gender}
-                  placeholder="Gender"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
+          {isVisible && 
+              genderOptions.map(genderoption => 
+                <TouchableOpacity
+                    style = {styles.dropdownOptions}
+                    key = {genderoption}
+                    onPress={()=>handleGender(genderoption)}
+                >
+                  <Text style = {[styles.dropdownText, {color : 'gray'}]}> {genderoption}</Text>
+              </TouchableOpacity>)
+          }
 
-          {/* <Picker
-            style={styles.input}
-            selectedValue={genderOption}
-            onValueChange={(itemValue) => setGenderOption(itemValue)}
-            // disabled={false}
-            mode={'dropdown'}
-            placeholder="DOB"
-          >
-            <Picker.Item label={"Gender"} enabled={false}/>
-            
-            {gender_options.map((option) => (
-              <Picker.Item
-                key={option}
-                label={option}
-                value={option}
-              />
-            ))}
-          </Picker> */}
-
-          {/* <TextInput
-                  style={styles.input}
-                  onChangeText={setPhone}
-                  value={phone}
-                  placeholder="Phone Number"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setEmail}
-                  value={email}
-                  placeholder="Email"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setProoftype}
-                  value={prooftype}
-                  placeholder="Proof Type"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setProofno}
-                  value={proofno}
-                  placeholder="Proof Number"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                /> */}
+{/* --------------------------------------------------------------------------------------------- */}
           <TextInput
                   style={styles.input}
                   onChangeText={setUsername}
@@ -246,6 +205,7 @@ const RegisterPage = ({navigation}) => {
         </ScrollView>
         </View>
 
+{/* --------------------------------------------------------------------------------------------- */}
         <View style={styles.checkboxContainer}>
         <CheckBox
           value={isChecked}
@@ -257,6 +217,7 @@ const RegisterPage = ({navigation}) => {
         </TouchableOpacity>
         </View>
 
+{/* --------------------------------------------------------------------------------------------- */}
 
       <TouchableOpacity
         style={styles.button}
@@ -266,7 +227,7 @@ const RegisterPage = ({navigation}) => {
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
 
-      </View>
+      </ScrollView>
     );
 
 };
@@ -277,11 +238,6 @@ const styles = StyleSheet.create(
     MainContainer: 
     {
       flex: 1,
-      // Set content's vertical alignment.
-      // justifyContent: 'center',
-      // Set content's horizontal alignment.
-      // alignItems: 'center',
-      // Set hex color code here.
       borderwidth:10,
       backgroundColor: '#16202A',
     },
@@ -335,18 +291,36 @@ const styles = StyleSheet.create(
       padding: 10,
       borderRadius: 5,
     },
-
-    dateinput: {
-      height: 40,
-      width: '50%',
-      // borderColor: 'gray',
-      // borderWidth: 1,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      marginBottom: 10,
-      marginRight: 10,
-      padding: 10,
+    
+    dropdownView: {
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    },
+    dropdown:{
+      backgroundColor:'#16202A',
+      width: '80%',
+      height : 40,
       borderRadius: 5,
+      borderWidth: 2,
+      borderColor : '#2F4052',
+      // alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical : 10
+    },
+    dropdownOptions:{
+      backgroundColor:'#16202A',
+      width: '80%',
+      height : 40,
+      borderRadius: 5,
+      borderWidth: 2,
+      borderColor : '#2F4052',
+      // alignItems: 'center',
+      justifyContent: 'center',
+    },
+    dropdownText : {
+      // color : "gray",
+      marginLeft : 5,
+
     },
   
     checkboxContainer: {
@@ -355,6 +329,7 @@ const styles = StyleSheet.create(
       marginBottom: 20,
       marginLeft : 10
     },
+    
 
     checkbox: {
       marginRight: 10,
@@ -375,31 +350,13 @@ const styles = StyleSheet.create(
       marginRight : 100
     },
 
-    datebutton: {
-      backgroundColor: '#2F4052',
-      padding: 10,
-      height : 40,
-      borderRadius: 50,
-      opacity: 0.7,
-      justifyContent: 'center',
-      alignItems: 'center',
-
-    },
 
     buttonText: {
       color: '#2EEE9D',
       fontSize: 20,
     },
 
-    datebuttonText: {
-      color: '#FFFFFF',
-      fontSize: 15,
-    },
 
-
-    dateView: {
-      flexDirection: 'row',
-    }
 });
 
 export default RegisterPage;

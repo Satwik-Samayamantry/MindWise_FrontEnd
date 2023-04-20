@@ -4,6 +4,7 @@ import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {storeData,getData,deleteData} from '../global/LocalStore'
+import '../global/ngrok.js'
 
 
 const { width, height } = Dimensions.get('window');
@@ -39,7 +40,7 @@ const ProfilePage = ({navigation}) => {
       console.log(user.username)
       console.log(oldPassword)
       console.log(newPassword)
-      axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/updatePassword', {"username":user.username, "role":"Patient", "oldpassword" : oldPassword, "newpassword" : newPassword}
+      axios.post(global.ngroklink+'/updatePassword', {"username":user.username, "role":"Patient", "oldpassword" : oldPassword, "newpassword" : newPassword}
       ).then((response) => {
         if(response.data)
         {

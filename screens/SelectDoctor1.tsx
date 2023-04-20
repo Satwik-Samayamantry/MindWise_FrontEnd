@@ -2,6 +2,7 @@ import React, { useEffect, useContext} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
+import '../global/ngrok.js'
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,7 +27,7 @@ const SelectDoctor1 = ({navigation}) => {
   const handleNo = () => {
     console.log('No');
     console.log(user)
-    axios.post('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/assign-doctor', {"doctorID": null, "patientID": user?.patientID, "summary": null}
+    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": null, "patientID": user?.patientID, "summary": null}
     ).then((response) => {
       console.log(response.data)
       if(response.data)

@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as Progress from 'react-native-progress';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import {storeData,getData,deleteData} from '../global/LocalStore'
+import '../global/ngrok.js'
 
 
 const { width, height } = Dimensions.get('window');
@@ -34,7 +35,7 @@ const HomePage = ({navigation}) => {
     
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get('https://40a1-2a09-bac5-3b4c-1282-00-1d8-174.ngrok-free.app/exercises');
+        const result = await axios.get(global.ngroklink+'/exercises');
         setData(result.data);
         // console.log(userData)
       };

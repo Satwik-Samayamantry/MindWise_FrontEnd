@@ -1,0 +1,8 @@
+{"question" : "Which of the following describes you the best currently?", "type" : "mcq", "options" : {"Working","Studying","Homemaker","Searching for a job","Retired"}}
+{"question" : "Marital Status", "type" : "mcq", "options" : {"Married","Single"}}
+{"question" : "Have you ever attempted to hurt yourself in the past?", "type" : "dropdown", "options" : {"Yes","No",""}}
+{"question" : "Marital Status", "type" : "mcq", "options" : {"Married","Single"}}
+{"question" : "Have you ever attempted to hurt yourself in the past?", "type" : "dropdown", "options" : {"Yes","No",""}}
+{"question" : "Marital Status", "type" : "mcq", "options" : {"Married","Single"}}
+{"question" : "Have you ever attempted to hurt yourself in the past?", "type" : "dropdown", "options" : {"Yes","No",""}}
+{"question" : "Marital Status", "type" : "mcq", "options" : {"Married","Single"}}
