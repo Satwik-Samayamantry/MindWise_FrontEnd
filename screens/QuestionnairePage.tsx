@@ -25,7 +25,7 @@ var questions = [{"question" : "Which of the following describes you the best cu
 ]
 
 
-const NotificationsPage = ({navigation}) => {
+const QuestionnairePage = ({navigation}) => {
 
     const [answers, setAnswers] = useState({});
 
@@ -110,10 +110,10 @@ const NotificationsPage = ({navigation}) => {
 
     return(
       <ScrollView style = {styles.MainContainer}>
-                <View style={styles.rectangleup}>
+                {/* <View style={styles.rectangleup}>
         </View>
         <View style={styles.rectangledown}>
-        </View>
+        </View> */}
 
 
         <Text style = {styles.heading}>Evaluation</Text>
@@ -275,4 +275,4 @@ const styles = StyleSheet.create(
   
 });
 
-export default NotificationsPage;
+export default QuestionnairePage;

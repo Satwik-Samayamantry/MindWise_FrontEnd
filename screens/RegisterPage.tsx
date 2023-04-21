@@ -74,6 +74,21 @@ const RegisterPage = ({navigation}) => {
     setIsChecked(!isChecked);
   };
 
+  const [hidepassword1,sethidepassword1] = useState(true)
+
+  const handleEye1 = () =>
+  {
+    sethidepassword1(!hidepassword1)
+  }
+
+  const [hidepassword2,sethidepassword2] = useState(true)
+
+  const handleEye2 = () =>
+  {
+    sethidepassword2(!hidepassword2)
+  }
+
+
   const handleRegister =  () => {
 
     axios.post(global.ngroklink+'/login', {"username":username, "role":"Patient", "password" : password}
@@ -188,20 +203,40 @@ const RegisterPage = ({navigation}) => {
                   placeholder="Username"
                   underlineColorAndroid="#2F4052" // Set the underline color to blue
                 />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setPassword}
-                  value={password}
-                  placeholder="Password"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
-          <TextInput
-                  style={styles.input}
-                  onChangeText={setConfirmPassword}
-                  value={confirmpassword}
-                  placeholder="Confirm Password"
-                  underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
+
+          <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input1}
+                    onChangeText={setPassword}
+                    value={password}
+                    placeholder="Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword1}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye1}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword1 ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
+
+          <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input1}
+                    onChangeText={setConfirmPassword}
+                    value={confirmpassword}
+                    placeholder="Confirm Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword2}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye2}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword2 ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
         </ScrollView>
         </View>
 
@@ -291,6 +326,19 @@ const styles = StyleSheet.create(
       padding: 10,
       borderRadius: 5,
     },
+
+    input1: {
+      height: 40,
+      width: '73%',
+      // borderColor: 'gray',
+      // borderWidth: 1,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      marginBottom: 10,
+      padding: 10,
+      borderRadius: 5,
+    },
+
     
     dropdownView: {
       flexDirection: 'row',
@@ -355,6 +403,17 @@ const styles = StyleSheet.create(
       color: '#2EEE9D',
       fontSize: 20,
     },
+    passwordView: {
+      // backgroundColor: '#16202A',
+      // width: '100%',
+      // borderRadius: 8,
+      flexDirection: 'row',
+      // justifyContent: 'space-between',
+      alignItems: 'center',
+      // borderWidth: 4,
+      // borderColor: '#16202A'
+      },
+
 
 
 });

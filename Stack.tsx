@@ -33,7 +33,9 @@ const App = () => {
         tabBarStyle: {backgroundColor: '#2F4052',borderTopWidth: 0},
         tabBarInactiveTintColor: '#FFFFFF',
         tabBarActiveTintColor: '#2EEE9D',
-      }}>
+        // tabBarHideOnKeyboard: true
+      }}
+    >
 
       <Tab.Screen
         name="Home"
@@ -96,13 +98,14 @@ const ScreenStack = () => {
       <NavigationContainer>
         <HomeStack.Navigator screenOptions={{ headerShown: false }}>
           <HomeStack.Screen name="AuthPage" component={AuthStack(user,App,LoginPage)} />
-          <HomeStack.Screen name="AuthPage1" component={AuthStack(user,LoginPage,App)} />
           <HomeStack.Screen name="RegisterPage" component={RegisterPage} />
           <HomeStack.Screen name="QuestionnairePage" component={QuestionnairePage} />
           <HomeStack.Screen name="SelectDoctor1" component={SelectDoctor1} />
           <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
           <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
           <HomeStack.Screen name="TaskPage" component={TaskPage} />
+          <HomeStack.Screen name="App" component={App} />
+          <HomeStack.Screen name="LoginPage" component={LoginPage} />
         </HomeStack.Navigator>
       </NavigationContainer>
   )

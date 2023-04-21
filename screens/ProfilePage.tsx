@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {storeData,getData,deleteData} from '../global/LocalStore'
 import '../global/ngrok.js'
+import Icon from 'react-native-vector-icons/Ionicons';  
 
 
 const { width, height } = Dimensions.get('window');
@@ -26,8 +26,29 @@ const ProfilePage = ({navigation}) => {
 
     const handleDeleteAcc = () => {
         Alert.alert('Are you sure you want to Delete Account?', 'You lose all data related to your account.');
-
     }
+
+    const [hidepassword1,sethidepassword1] = useState(true)
+
+    const handleEye1 = () =>
+    {
+      sethidepassword1(!hidepassword1)
+    }
+
+    const [hidepassword2,sethidepassword2] = useState(true)
+
+    const handleEye2 = () =>
+    {
+      sethidepassword2(!hidepassword2)
+    }
+
+    const [hidepassword3,sethidepassword3] = useState(true)
+
+    const handleEye3 = () =>
+    {
+      sethidepassword3(!hidepassword3)
+    }
+  
     
 
     const handleLogout = () => {
@@ -55,6 +76,22 @@ const ProfilePage = ({navigation}) => {
         console.log(error.message)
       });    }
 
+      // useEffect(()=>{
+      //   const fetchUserData = async () => {
+      //     try{
+      //       const data1 = await getData('user');
+      //       console.log(data1)
+      //       setUser(data1);
+      //     }
+      //     catch(error){
+      //         console.log("2" + error);
+      //     }
+      //   };
+      //   fetchUserData()
+      //   console.log(user)
+      // },[])
+    
+
     return(
       
       <View style = {styles.MainContainer}>
@@ -75,7 +112,58 @@ const ProfilePage = ({navigation}) => {
 
         <Text style={styles.startText}> Update Password</Text>
 
-        <TextInput
+        <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input}
+                    onChangeText={setoldPassword}
+                    value={oldPassword}
+                    placeholder="Current Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword1}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye1}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword1 ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
+
+          <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input}
+                    onChangeText={setnewPassword}
+                    value={newPassword}
+                    placeholder="New Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword2}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye2}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword2 ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
+
+          <View style={styles.passwordView}>
+            <TextInput
+                    style={styles.input}
+                    onChangeText={setconfirmPassword}
+                    value={confirmPassword}
+                    placeholder="Confirm Password"
+                    underlineColorAndroid="#2F4052" 
+                    secureTextEntry={hidepassword3}
+                  />
+
+            <TouchableOpacity
+              onPress={handleEye3}>
+                <Icon style={[{color: 'gray', alignContent : "flex-end"}]} size={25} name={hidepassword3 ? 'eye-off' : 'eye'}/>  
+            </TouchableOpacity>
+
+          </View>
+
+        {/* <TextInput
                   style={styles.input}
                   onChangeText={setoldPassword}
                   value={oldPassword}
@@ -95,7 +183,7 @@ const ProfilePage = ({navigation}) => {
                   value={confirmPassword}
                   placeholder="Confirm Password"
                   underlineColorAndroid="#2F4052" // Set the underline color to blue
-                />
+                /> */}
 
         <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -199,6 +287,16 @@ const styles = StyleSheet.create(
         // justifyContent: 'center',
         alignItems: 'center',
       },
+      passwordView: {
+        // backgroundColor: '#16202A',
+        // width: '100%',
+        // borderRadius: 8,
+        flexDirection: 'row',
+        // justifyContent: 'space-between',
+        alignItems: 'center',
+        // borderWidth: 4,
+        // borderColor: '#16202A'
+        },
   
   
   
