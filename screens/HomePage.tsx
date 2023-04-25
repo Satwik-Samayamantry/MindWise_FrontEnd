@@ -5,6 +5,7 @@ import * as Progress from 'react-native-progress';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import {storeData,getData,deleteData} from '../global/LocalStore'
 import '../global/ngrok.js'
+import NetInfo from '@react-native-community/netinfo';
 
 
 const { width, height } = Dimensions.get('window');
@@ -26,7 +27,7 @@ const HomePage = ({navigation}) => {
     const [assignedtasks,setassignedtasks] = useState(0);
     const [completedtasks,setcompletedtasks] = useState(0);
     const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
-    const [status,setStatus] = useState(0);
+    const [status,setStatus] = useState(user?.status);
 
     const handleTaskPage = (exerciseid) => {
       setCurrentTask(exerciseid)
@@ -35,7 +36,6 @@ const HomePage = ({navigation}) => {
 
     useEffect(()=>{
       const updatestatus = async () =>{
-        console.log(typeof(user?.username))
         await axios.post(global.ngroklink+'/setstatus',{"username":user?.username, "status":status}
         ).then((response) => {
           // console.log(response)
@@ -76,6 +76,35 @@ const HomePage = ({navigation}) => {
       };
       fetchprogress();
     },[])
+
+
+    useEffect(() => {
+      // Check for network connectivity
+      NetInfo.addEventListener((state) => {
+        if (state.isConnected) {
+          // Device is online, send data to backend
+          sendDataToBackend();
+        }
+      });
+    }, []);
+  
+    const sendDataToBackend = async () => {
+      // Retrieve saved data from local storage
+      const savedText = await getData("cache");
+      if (savedText!==null) {
+        try {
+          console.log(savedText)
+          // const response = await axios.post(global.ngroklink+'/postfeelings', { "patientid" : user?.patientID, "feelings" : savedText.feelings, "timestamp":savedText.timestamp});
+          // if (response.status === 200) {
+            await deleteData("cache");
+          // }
+        } catch (error) {
+          // Handle errors that may occur when sending data to backend
+          Alert.alert('Error', 'Failed to send data to backend.');
+        }
+      }
+    };
+  
 
 
     

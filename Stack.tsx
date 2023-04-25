@@ -81,7 +81,7 @@ const ScreenStack = () => {
     const fetchUserData = async () => {
       try{
         const data1 = await getData('user');
-        console.log(data1)
+        // console.log(data1)
         setUser(data1);
       }
       catch(error){
@@ -89,7 +89,7 @@ const ScreenStack = () => {
       }
     };
     fetchUserData()
-    console.log(user)
+    // console.log(user)
   },[])
 
 

@@ -39,7 +39,7 @@ const LoginPage = ({navigation}) => {
       {
         axios.get(global.ngroklink+'/getpatientbyusername', {params:{"username":username}}).then((response11)=>{
 
-          console.log(response11.data)
+          // console.log(response11.data)
           setUser(response11.data);
           storeData('user',response11.data);
           navigation.navigate('App');
