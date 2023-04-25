@@ -20,7 +20,7 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 const DoctorPage = ({navigation}) => {
 
     const [doc_data, setData] = useState([]);
-    const {user,setUser} = useContext(UserContext);
+    const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
 
     useEffect(() => {
       const fetchData = async () => {

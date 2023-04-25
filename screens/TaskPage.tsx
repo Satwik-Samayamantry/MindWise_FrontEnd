@@ -1,6 +1,7 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import {UserContext, UserContextProvider} from '../global/UserContext';
 
 
 const { width, height } = Dimensions.get('window');
@@ -12,12 +13,25 @@ const horizontalScale = (size : number ) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size : number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
-var taskname = "TAskNAme1";
-var tasktext = "Description of Task 1 will be displayed here.Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. ";
-var taskquestion = "question111 ?";
-var optionslist = ['yes','no']
+// var taskname = "TAskNAme1";
+// var tasktext = "Description of Task 1 will be displayed here.Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. Description of Task 1 will be displayed here. ";
+// var taskquestion = "question111 ?";
+var optionslist = ['Yes','No']
 
 const TaskPage = ({navigation}) => {
+
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
+  const [taskdata,setTaskdata] = useState(null);
+
+  useEffect(()=>{
+    const gettaskdetails = async () => {
+        await axios.get(global.ngroklink+'/exercisebyid',{params:{exerciseid:currentTask}}
+        ).then((response)=>{
+          setTaskdata(response.data);
+        })
+    };
+    gettaskdetails();
+  },[])
 
   const handleYes = () => {
     console.log('Yes');
@@ -32,40 +46,69 @@ const TaskPage = ({navigation}) => {
     return(
 
         <View style = {styles.MainContainer}>
-        <Image source = {require('../logo1.png')} style={{width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
+          <Image source = {require('../logo1.png')} style={{width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
 
-        <View style={styles.TaskContainer}> 
-        <Text style={styles.TaskName}>{taskname}</Text>
-        <Text style={styles.TaskText}>{tasktext}</Text>
-        <Text style={styles.TaskQuestion}>{taskquestion}</Text>
-
-
-        {optionslist.map(option =>
-
-          <TouchableOpacity 
-           key={option}
-           onPress = {() => setOption(option)}>
-              <View style={styles.radiolist}>
-
-                <View style={styles.outer}> 
-                  {
-                    selectedOption== option ? <View style={styles.inner}/> : null
-                  }
-                   
-                </View>
-
-                <Text style={styles.radiotext}>{option}</Text>
-              </View>
-
-          </TouchableOpacity>
+          <View style={styles.TaskContainer}> 
+            <Text style={styles.TaskName}>{taskdata?.name}</Text>
+            <Text style={styles.TaskText}>{taskdata?.description}</Text>
+            
+            <Text style={styles.TaskQuestion}>
+              {taskdata?.type=="Mcq"? 
+              "Did you complete the task?" :
+              "How do you feel after completing the task?"
+            }
+              </Text>
 
 
-        )}
-        
+            {taskdata?.type=="Mcq"?
+                optionslist.map(option =>
+
+                  <TouchableOpacity 
+                  key={option}
+                  onPress = {() => setOption(option)}>
+                      <View style={styles.radiolist}>
+
+                        <View style={styles.outer}> 
+                          {
+                            selectedOption== option ? <View style={styles.inner}/> : null
+                          }
+                          
+                        </View>
+
+                        <Text style={styles.radiotext}>{option}</Text>
+                      </View>
+
+                  </TouchableOpacity>
+
+
+                )
+                :
+                  <View style={styles.emojibar}>
+                    <TouchableOpacity>
+                      <Text style={styles.emoji}>😠</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                      <Text style={styles.emoji}>🙁</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                      <Text style={styles.emoji}>😐</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                      <Text style={styles.emoji}>🙂</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                      <Text style={styles.emoji}>😄</Text>
+                    </TouchableOpacity>
+                  </View>
+                
+            }
+          </View>
 
         </View>
-
-      </View>
     );
 
 };
@@ -118,6 +161,15 @@ const styles = StyleSheet.create(
       marginLeft : 27,
       marginTop : 10
       
+    },
+    emojibar:{
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emoji:{
+      fontSize:36,
+      margin : 5
     },
 
     radiotext:

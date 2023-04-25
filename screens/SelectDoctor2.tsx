@@ -60,7 +60,7 @@ const SelectDoctor2 = ({navigation}) => {
     }); 
     
   };
-  const {user,setUser} = useContext(UserContext);
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
     
     return(
       

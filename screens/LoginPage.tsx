@@ -22,7 +22,7 @@ const LoginPage = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const {user,setUser} = useContext(UserContext);
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
 
   const [hidepassword,sethidepassword] = useState(true)
 
@@ -35,12 +35,15 @@ const LoginPage = ({navigation}) => {
     axios.post(global.ngroklink+'/validate', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       
-      if(response.data != null && response.data != "")
+      if(response.data)
       {
-        console.log(response.data)
-        setUser(response.data);
-        storeData('user',response.data);
-        navigation.navigate('App');
+        axios.get(global.ngroklink+'/getpatientbyusername', {params:{"username":username}}).then((response11)=>{
+
+          console.log(response11.data)
+          setUser(response11.data);
+          storeData('user',response11.data);
+          navigation.navigate('App');
+        })
       }
       else
       {

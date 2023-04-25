@@ -15,14 +15,37 @@ const guidelineBaseHeight = 800;
 const horizontalScale = (size : number ) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size : number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
-var progress = 49
+// var progress = 0
 var taskstatus = 1
 
 
 const HomePage = ({navigation}) => {
 
     const [exercise_data, setData] = useState([]);
-    const {user,setUser} = useContext(UserContext);
+    const [progress,setprogress] = useState(0);
+    const [assignedtasks,setassignedtasks] = useState(0);
+    const [completedtasks,setcompletedtasks] = useState(0);
+    const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
+    const [status,setStatus] = useState(0);
+
+    const handleTaskPage = (exerciseid) => {
+      setCurrentTask(exerciseid)
+      navigation.navigate('TaskPage')
+    }
+
+    useEffect(()=>{
+      const updatestatus = async () =>{
+        console.log(typeof(user?.username))
+        await axios.post(global.ngroklink+'/setstatus',{"username":user?.username, "status":status}
+        ).then((response) => {
+          // console.log(response)
+        }).catch((error) => {
+          // Alert.alert('Error', error.message);
+          console.log(error.message)
+        });
+      };
+      updatestatus();
+    },[status])
     
     useEffect(()=>{
       const fetchUserData = async () => {
@@ -35,13 +58,27 @@ const HomePage = ({navigation}) => {
     
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get(global.ngroklink+'/exercises');
+        const result = await axios.get(global.ngroklink+'/getexercisesfrompid',{params: {patientid: user?.patientID}});
         setData(result.data);
-        // console.log(userData)
+        // console.log(result.data)
       };
 
       fetchData();
     }, []);
+
+    useEffect(()=>{
+      const fetchprogress = async () =>{
+        const num = await axios.get(global.ngroklink + "/getcountbypid", {params: {patientID: user?.patientID} });
+        setassignedtasks(parseFloat(num.data));
+        const numcd = await axios.get(global.ngroklink + "/getcountpidandcs", {params: {patientID: user?.patientID, completionstatus:1}})
+        setcompletedtasks(parseFloat(numcd.data));
+        setprogress(numcd.data/num.data)
+      };
+      fetchprogress();
+    },[])
+
+
+    
     
     return(
       
@@ -51,26 +88,26 @@ const HomePage = ({navigation}) => {
         {/* <Text style={styles.startText}> Hey, !!</Text> */}
 
         <View style={styles.rect}>
-          <Text style={styles.questext}> How are you today?</Text>
+          <Text style={styles.questext}> How are you feeling?</Text>
           
           <View style={styles.emojibar}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setStatus(1)}>
               <Text style={styles.emoji}>😠</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setStatus(2)}>
               <Text style={styles.emoji}>🙁</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setStatus(3)}>
               <Text style={styles.emoji}>😐</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setStatus(4)}>
               <Text style={styles.emoji}>🙂</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setStatus(5)}>
               <Text style={styles.emoji}>😄</Text>
             </TouchableOpacity>
           </View>
@@ -79,26 +116,26 @@ const HomePage = ({navigation}) => {
 
         <View style={styles.progressview}>
           <Text style={styles.progresstext}>Your Progress </Text>
-          <Text style={styles.progresstext}>                       {progress}% </Text>
+          <Text style={styles.progresstext}>{progress*100}% </Text>
         </View>
 
         <View style={styles.barview}> 
-        <Progress.Bar progress={progress/100} width={horizontalScale(300)} borderRadius={10} height={15} color='#2EEE9D' unfilledColor='#2F4052' borderColor = '#2F4052' />
+        <Progress.Bar progress={progress} width={horizontalScale(300)} borderRadius={10} height={15} color='#2EEE9D' unfilledColor='#2F4052' borderColor = '#2F4052' />
         </View>
 
-        {exercise_data.map(doctor => 
+        {exercise_data.map(exercise => 
 
                 <TouchableOpacity
-                key={doctor.exerciseID}
-                style={styles.taskbutton}>
-                {/* onPress = {() => connectToDevice(device)}> */}
+                key={exercise.exerciseID}
+                style={styles.taskbutton}
+                 onPress = {() => handleTaskPage(exercise.exerciseID)}>
                 
                         <View style={styles.buttonlist}>
                                         <Text style={styles.TaskText}>
-                                            Task {doctor.exerciseID}
+                                            Task {exercise.exerciseID}
                                         </Text>
 
-                                        {taskstatus ? <Text style={styles.statusText1}> Completed</Text>  : <Text style={styles.statusText2}> Yet to complete</Text>}
+                                        {exercise.completionstatus ? <Text style={styles.statusText1}> Completed</Text>  : <Text style={styles.statusText2}> Yet to complete</Text>}
                         </View>
 
               </TouchableOpacity>)}
@@ -166,6 +203,7 @@ const styles = StyleSheet.create(
     },
     progressview:{
       flexDirection: 'row',
+      justifyContent: 'space-between'
 
     },
     barview:{

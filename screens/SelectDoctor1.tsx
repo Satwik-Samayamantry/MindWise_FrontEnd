@@ -17,7 +17,7 @@ const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(s
 
 const SelectDoctor1 = ({navigation}) => {
 
-  const {user,setUser} = useContext(UserContext);
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
 
   const handleYes = () => {
     console.log('Yes');

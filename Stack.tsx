@@ -75,7 +75,7 @@ const AuthStack = (user, authenticatedComponent, unauthenticatedComponent) => {
 }
 
 const ScreenStack = () => {
-  const {user,setUser} = useContext(UserContext);
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
 
   useEffect(()=>{
     const fetchUserData = async () => {

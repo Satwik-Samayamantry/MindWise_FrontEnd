@@ -45,7 +45,7 @@ const RegisterPage = ({navigation}) => {
   const [isChecked, setIsChecked] = useState(false);
   const status = 1 ;
 
-  const {user,setUser} = useContext(UserContext);
+  const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
 
 
   const handleDate = (selectedDate) => {
@@ -94,17 +94,13 @@ const RegisterPage = ({navigation}) => {
     axios.post(global.ngroklink+'/login', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       // Alert.alert('Success', 'User registered successfully');
-      // console.log(response.data)
+      // console.log(dob)
 
       axios.post(global.ngroklink+'/patient',
       {
         "name":name ,
         "dob" : dob, 
         "gender" :  gender, 
-        "phoneNo" : phone, 
-        "email" : email, 
-        "proofType" : prooftype, 
-        "proofNum" : proofno,
         "username":username,
         "status" :  1
       }).then((response) => {

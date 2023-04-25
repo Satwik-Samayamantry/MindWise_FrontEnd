@@ -22,7 +22,8 @@ const ProfilePage = ({navigation}) => {
     const [oldPassword, setoldPassword] = useState('');
     const [newPassword, setnewPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState('');
-    const {user,setUser} = useContext(UserContext);
+    const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
+    const [doctorname,setdoctorname] = useState('');
 
     const handleDeleteAcc = () => {
         Alert.alert('Are you sure you want to Delete Account?', 'You lose all data related to your account.');
@@ -76,20 +77,21 @@ const ProfilePage = ({navigation}) => {
         console.log(error.message)
       });    }
 
-      // useEffect(()=>{
-      //   const fetchUserData = async () => {
-      //     try{
-      //       const data1 = await getData('user');
-      //       console.log(data1)
-      //       setUser(data1);
-      //     }
-      //     catch(error){
-      //         console.log("2" + error);
-      //     }
-      //   };
-      //   fetchUserData()
-      //   console.log(user)
-      // },[])
+      useEffect(()=>{
+        const fetchDoctor = async () => {
+          axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID}}
+          ).then((response)=>{
+            axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : response.data}}
+            ).then((response11)=>{
+              setdoctorname(response11.data)
+            })
+          })
+          // const doc_name = await axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : docid}});
+          // setdoctorname(doc_name);
+        };
+        fetchDoctor()
+        console.log(user)
+      },[doctorname])
     
 
     return(
@@ -108,6 +110,15 @@ const ProfilePage = ({navigation}) => {
 
         <View style={styles.fieldview}>
         <Text style={styles.detailsText}> Gender : {user?.gender} </Text>
+        </View>
+
+        <View style={styles.fieldview}>
+        <Text style={styles.detailsText}> Doctor : {doctorname} </Text>
+        <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.changebutton} onPress={()=>navigation.navigate('DoctorPage')}>
+          <Text style={styles.buttonText}> Change Doctor</Text>
+        </TouchableOpacity>
+        </View>
         </View>
 
         <Text style={styles.startText}> Update Password</Text>
@@ -232,7 +243,7 @@ const styles = StyleSheet.create(
     },
     fieldview:{
         flexDirection: 'row',
-  
+        alignContent:"center"
       },
       highlight1: {
         color: '#B73B3B',
@@ -278,9 +289,18 @@ const styles = StyleSheet.create(
         paddingRight:30,
         marginTop:15
       },
+      changebutton:{
+        backgroundColor: '#2F4052',
+        // padding: 10,
+        borderRadius: 50,
+        opacity: 0.7,
+        padding:10,
+        marginLeft:30,
+        alignItems: 'center',
+      },
       buttonText: {
         color: '#2EEE9D',
-        fontSize: 20,
+        fontSize: 18,
       },
       buttonContainer: {
         flex:1,
