@@ -3,6 +3,7 @@ import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, 
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import '../global/ngrok.js'
+import {storeData,getData,deleteData} from '../global/LocalStore'
 
 
 const { width, height } = Dimensions.get('window');
@@ -44,11 +45,20 @@ const SelectDoctor2 = ({navigation}) => {
 
     axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}
     ).then((response) => {
-      console.log(response.data)
+      console.log("hello"+response.data)
       if(response.data)
       {
-        navigation.navigate('App');
-        // Alert.alert('Success', 'Login successful');
+        console.log("doctorid :"+ doctor?.doctorID)
+        console.log("patientid:"+user?.patientID)
+        axios.post(global.ngroklink+'/createchat', {params:{doctorid : doctor?.doctorID, patientid:user?.patientID}}
+        ).then((reply)=>{
+            storeData('chatroomid',{"chatroomid":reply.data})
+
+            navigation.navigate('App');
+        }).catch((error) => {
+          Alert.alert('Error', error.message);
+          console.log(error.message)
+        });         // Alert.alert('Success', 'Login successful');
       }
       else
       {

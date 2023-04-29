@@ -16,7 +16,7 @@ const guidelineBaseHeight = 800;
 const horizontalScale = (size : number ) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size : number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size : number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
-// var progress = 0
+var progress = 50
 var taskstatus = 1
 
 
@@ -28,6 +28,7 @@ const HomePage = ({navigation}) => {
     const [completedtasks,setcompletedtasks] = useState(0);
     const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
     const [status,setStatus] = useState(user?.status);
+    const [chatid,setchatid] = useState(null)
 
     const handleTaskPage = (exerciseid) => {
       setCurrentTask(exerciseid)
@@ -45,7 +46,7 @@ const HomePage = ({navigation}) => {
         });
       };
       updatestatus();
-    },[status])
+    },[])
     
     useEffect(()=>{
       const fetchUserData = async () => {
@@ -66,16 +67,16 @@ const HomePage = ({navigation}) => {
       fetchData();
     }, []);
 
-    useEffect(()=>{
-      const fetchprogress = async () =>{
-        const num = await axios.get(global.ngroklink + "/getcountbypid", {params: {patientID: user?.patientID} });
-        setassignedtasks(parseFloat(num.data));
-        const numcd = await axios.get(global.ngroklink + "/getcountpidandcs", {params: {patientID: user?.patientID, completionstatus:1}})
-        setcompletedtasks(parseFloat(numcd.data));
-        setprogress(numcd.data/num.data)
-      };
-      fetchprogress();
-    },[])
+    // useEffect(()=>{
+    //   const fetchprogress = async () =>{
+    //     const num = await axios.get(global.ngroklink + "/getcountbypid", {params: {patientID: user?.patientID} });
+    //     setassignedtasks(parseFloat(num.data));
+    //     const numcd = await axios.get(global.ngroklink + "/getcountpidandcs", {params: {patientID: user?.patientID, completionstatus:1}})
+    //     setcompletedtasks(parseFloat(numcd.data));
+    //     setprogress((numcd.data/num.data).toFixed(4))
+    //   };
+    //   fetchprogress();
+    // },[progress,exercise_data])
 
 
     useEffect(() => {
@@ -104,6 +105,18 @@ const HomePage = ({navigation}) => {
         }
       }
     };
+
+    useEffect(()=>{
+      const getchatid = async () =>{
+          const temp = await getData("chatroomid") ;
+          console.log(temp)
+          if(temp!==null)
+          {
+            setchatid(temp)
+          }
+      };
+      getchatid();
+    },[])
   
 
 
@@ -170,10 +183,16 @@ const HomePage = ({navigation}) => {
               </TouchableOpacity>)}
 
 
-        {/* <TouchableOpacity 
-  // onPress={() => navigation.navigate('RegisterPage')}
-          >
-          <Text style={styles.chattext}>Chat with Doctor</Text></TouchableOpacity> */}
+              {/* <Text>{chatid}</Text> */}
+          {
+            chatid!==null ? 
+              <TouchableOpacity 
+                  onPress={() => navigation.navigate('ChatPage')}>
+                <Text style={styles.chattext}>Chat with Doctor</Text>
+              </TouchableOpacity> 
+              :
+              <Text>{chatid}</Text>
+          }
 
 
       </View>

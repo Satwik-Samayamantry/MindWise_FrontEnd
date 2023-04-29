@@ -208,13 +208,13 @@ const ProfilePage = ({navigation}) => {
 
 
         <View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
             onPress={handleDeleteAcc}>
                 <Text style={styles.highlight1}>Delete Account</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={handleLogout}>
-                <Text style={styles.highlight2}>Logout</Text>
+                <Text style={styles.highlight1}>Logout</Text>
             </TouchableOpacity>
         </View>
 
@@ -248,7 +248,7 @@ const styles = StyleSheet.create(
       highlight1: {
         color: '#B73B3B',
         marginLeft : 25,
-        marginBottom : 5,
+        marginBottom : 25,
         fontSize:18
       },
       highlight2: {

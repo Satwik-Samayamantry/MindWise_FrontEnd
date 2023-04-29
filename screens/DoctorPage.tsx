@@ -4,6 +4,8 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import '../global/ngrok.js'
+import { ScrollView } from 'react-native-gesture-handler';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 
 
 const { width, height } = Dimensions.get('window');
@@ -38,7 +40,18 @@ const DoctorPage = ({navigation}) => {
       console.log(response.data)
       if(response.data)
       {
-        navigation.navigate('App');
+        console.log("doctorid :"+ doctorId)
+        console.log("patientid:"+user?.patientID)
+
+        axios.post(global.ngroklink+'/createchat', {"doctorid" : doctorId, "patientid": user.patientID}
+        ).then((reply)=>{
+            storeData('chatroomid',{"chatroomid":reply.data})
+
+            navigation.navigate('App');
+        }).catch((error) => {
+          Alert.alert('Error', error.message);
+          console.log(error.message)
+        }); 
         // Alert.alert('Success', 'Login successful');
       }
       else
@@ -49,16 +62,15 @@ const DoctorPage = ({navigation}) => {
       Alert.alert('Error', error.message);
       console.log(error.message)
     }); 
-      navigation.navigate('App')
     };
   
 
     return(
       
-      <View style = {styles.MainContainer}>
+      <ScrollView style = {styles.MainContainer}>
 
         <View style={styles.rectangleup}/>
-        <View style={styles.rectangledown}/>
+        {/* <View style={styles.rectangledown}/> */}
 
         <Text style={styles.pageheading}> Available Doctors</Text>
 
@@ -82,7 +94,7 @@ const DoctorPage = ({navigation}) => {
       </View>
                           </TouchableOpacity>)}
 
-    </View>
+    </ScrollView>
 );};
 
 

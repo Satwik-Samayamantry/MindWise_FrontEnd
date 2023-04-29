@@ -18,6 +18,7 @@ import NotificationsScreen from './screens/NotificationPage';
 import ProfileScreen from './screens/ProfilePage';
 import {UserContext, UserContextProvider} from './global/UserContext';
 import {storeData,getData,deleteData} from './global/LocalStore'
+import ChatPage from './screens/ChatPage';
 
 
 const HomeStack = createStackNavigator();
@@ -104,6 +105,7 @@ const ScreenStack = () => {
           <HomeStack.Screen name="SelectDoctor2" component={SelectDoctor2} />
           <HomeStack.Screen name="DoctorPage" component={DoctorPage} />
           <HomeStack.Screen name="TaskPage" component={TaskPage} />
+          <HomeStack.Screen name="ChatPage" component={ChatPage} />
           <HomeStack.Screen name="App" component={App} />
           <HomeStack.Screen name="LoginPage" component={LoginPage} />
         </HomeStack.Navigator>
