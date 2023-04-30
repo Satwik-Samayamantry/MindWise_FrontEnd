@@ -20,6 +20,8 @@ var progress = 50
 var taskstatus = 1
 
 
+
+
 const HomePage = ({navigation}) => {
 
     const [exercise_data, setData] = useState([]);
@@ -28,7 +30,9 @@ const HomePage = ({navigation}) => {
     const [completedtasks,setcompletedtasks] = useState(0);
     const {user,setUser,currentTask, setCurrentTask} = useContext(UserContext);
     const [status,setStatus] = useState(user?.status);
-    const [chatid,setchatid] = useState(null)
+    const [chatid,setchatid] = useState(null);
+    const [docid,setdocid] = useState("")
+
 
     const handleTaskPage = (exerciseid) => {
       setCurrentTask(exerciseid)
@@ -67,6 +71,17 @@ const HomePage = ({navigation}) => {
       fetchData();
     }, []);
 
+    useEffect(()=>{
+      const fetchDoctor = async () => {
+        axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID}}
+        ).then((response)=>{
+          setdocid(response.data)
+        })
+      };
+      fetchDoctor()
+    },[])
+
+
     // useEffect(()=>{
     //   const fetchprogress = async () =>{
     //     const num = await axios.get(global.ngroklink + "/getcountbypid", {params: {patientID: user?.patientID} });
@@ -78,33 +93,48 @@ const HomePage = ({navigation}) => {
     //   fetchprogress();
     // },[progress,exercise_data])
 
+    const sendDataToBackend = async () => {
+      // Retrieve saved data from local storage
+        const savedText = await getData("cache");
+        if (savedText!==null) {
+            console.log(savedText)
+            if(docid)
+            {
+              const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp});
+              await deleteData("cache");
+    
+            }
+        }
+    };
+
 
     useEffect(() => {
       // Check for network connectivity
-      NetInfo.addEventListener((state) => {
-        if (state.isConnected) {
+      const fetchNetworkStatus = async () => 
+      {
+        NetInfo.addEventListener( async (state) => {
+        if (state.isConnected) 
+        {
           // Device is online, send data to backend
-          sendDataToBackend();
+          // sendDataToBackend();
+            const savedText = await getData("cache");
+            if (savedText!==null) {
+                console.log(savedText)
+                if(docid)
+                {
+                  const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp});
+                  await deleteData("cache");
+        
+                }
+            }
         }
-      });
-    }, []);
+        })
+      };
+      fetchNetworkStatus();
+      
+    }, [docid]);
   
-    const sendDataToBackend = async () => {
-      // Retrieve saved data from local storage
-      const savedText = await getData("cache");
-      if (savedText!==null) {
-        try {
-          console.log(savedText)
-          // const response = await axios.post(global.ngroklink+'/postfeelings', { "patientid" : user?.patientID, "feelings" : savedText.feelings, "timestamp":savedText.timestamp});
-          // if (response.status === 200) {
-            await deleteData("cache");
-          // }
-        } catch (error) {
-          // Handle errors that may occur when sending data to backend
-          Alert.alert('Error', 'Failed to send data to backend.');
-        }
-      }
-    };
+    
 
     useEffect(()=>{
       const getchatid = async () =>{

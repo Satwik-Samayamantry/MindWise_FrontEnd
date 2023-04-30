@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {StyleSheet, View, KeyboardAvoidingView, SafeAreaView, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import {StyleSheet, ScrollView, View, KeyboardAvoidingView, SafeAreaView, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import * as Progress from 'react-native-progress';
 import {UserContext, UserContextProvider} from '../global/UserContext';
@@ -112,77 +112,92 @@ const ChatPage = ({navigation}) => {
               }); 
         };
         getmessages();
-    },[messages])
+    },[])
+    const scrollView = useRef();
+
     
     return(
     //   <SafeAreaView style = {styles.MainContainer}>
 
         <SafeAreaView style={{ flex: 1, backgroundColor: '#16202A', }}>
+                    
+            {/* <View style={{ flex: 1 }}> */}
+            {/* <Image source = {require('../logo1.png')} style={{  width: 60, height: 60, top : 20, left : 10,resizeMode: 'contain'}}/> */}
+            <View style={styles.topbar}>
+                <TouchableOpacity onPress={()=>navigation.navigate('App')}>
+                    <Icon style={[{color: 'black',marginRight:10}]} size={25} name={'md-chevron-back'}/>  
+                </TouchableOpacity>
+                <Icon style={[{color: 'white', marginRight:10}]} size={35} name={'person-circle'}/>  
+                <Text style={{color:'#2EEE9D',fontSize:24}}>{docname}</Text>
+            </View>
+
+            {/* </View> */}
+            
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.msgcontainer}
+        behavior="height"
+      >
+            <ScrollView 
+			ref={ref => scrollView.current = ref}
+			onContentChange={() => {
+				scrollView.current.scrollToEnd({ animated: true })
+			}}
+            // style={{marginTop:80}}
+		> 
+            {/* <View style={styles.msgcontainer}> */}
+                {messages.map(m => 
+                <View style={{width: "100%",
+                flexDirection: "column",
+                alignItems: m.senderId===user.patientID ? "flex-end" : "flex-start",
+                marginBottom:5
+                }}>
+                    
+
+                    <View style={{backgroundColor : m.senderId===user.patientID ? "#2EEE9D" : "#2F4052",
+                                    padding:10,borderRadius:50,
+                                    marginRight: m.senderId===user.patientID ? 15:0,
+                                    marginLeft: m.senderId===user.patientID ? 0:15,
+                                    
+                                }}> 
+                                    
+                        <Text style={{backgroundColor : m.senderId===user.patientID ? "#2EEE9D" : "#2F4052",color:m.senderId===user.patientID?"black":"#2EEE9D", fontSize:16}}>{m.content}</Text>
+                    
+                    </View>
+                </View>
+
+                    )}
+            {/* </View> */}
+            </ScrollView>
+
+
+            {/* <KeyboardAvoidingView
+                // keyboardVerticalOffset={50}
+                behavior={'height'}
                 style={{ flex: 1 }}
-            >
-                    <View style={{ flex: 1 }}>
-                    <Image source = {require('../logo1.png')} style={{  width: 60, height: 60, top : 20, left : 10,resizeMode: 'contain'}}/>
-                    <View style={styles.topbar}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('App')}>
-                            <Icon style={[{color: 'black',marginRight:10}]} size={20} name={'md-chevron-back'}/>  
+            > */}
+
+                <View style={styles.sendMessageContainer}>
+                    <View style={styles.sendMessageInnerContainer}>
+                        <TextInput
+                        style={styles.typeMessage}
+                        onChangeText={setCurrentMessage}
+                        value={currentMessage}
+                        placeholder={"Type Message here.."}
+                        multiline
+                        numberOfLines={1}
+                        cursorColor={"#2EEE9D"}
+                        />
+                        <TouchableOpacity
+                        onPress={() => {
+                            sendMessage();
+                        }}
+                        >
+                    <Icon style={[{color: '#2EEE9D', marginRight:10}]} size={20} name={'send'}/>  
                         </TouchableOpacity>
-                        <Icon style={[{color: 'white', marginRight:10}]} size={30} name={'person-circle'}/>  
-                        <Text style={{color:'#2EEE9D',fontSize:22}}>{docname}</Text>
                     </View>
-
-                    </View>
-
-
-                    <View style={styles.msgcontainer}>
-                        {messages.map(m => 
-                        <View style={{width: "100%",
-                        flexDirection: "column",
-                        alignItems: m.senderId===user.patientID ? "flex-end" : "flex-start",
-                        marginBottom:5
-                        }}>
-                            
-
-                            <View style={{backgroundColor : m.senderId===user.patientID ? "#2EEE9D" : "#2F4052",
-                                            padding:10,borderRadius:50,
-                                            marginRight: m.senderId===user.patientID ? 15:0,
-                                            marginLeft: m.senderId===user.patientID ? 0:15,
-                                            
-                                            }}> 
-                                            
-                                <Text style={{backgroundColor : m.senderId===user.patientID ? "#2EEE9D" : "#2F4052",color:m.senderId===user.patientID?"black":"#2EEE9D"}}>{m.content}</Text>
-                            
-                            </View>
-                        </View>
-
-                            )}
-                    </View>
-
-
-
-                    <View style={styles.sendMessageContainer}>
-                        <View style={styles.sendMessageInnerContainer}>
-                            <TextInput
-                            style={styles.typeMessage}
-                            onChangeText={setCurrentMessage}
-                            value={currentMessage}
-                            placeholder={"Type Message here.."}
-                            multiline
-                            numberOfLines={1}
-                            cursorColor={"#2EEE9D"}
-                            />
-                            <TouchableOpacity
-                            onPress={() => {
-                                sendMessage();
-                            }}
-                            >
-                        <Icon style={[{color: '#2EEE9D', marginRight:10}]} size={20} name={'send'}/>  
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </KeyboardAvoidingView>
-            </SafeAreaView>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
 
     );
 
@@ -202,29 +217,31 @@ const styles = StyleSheet.create(
     },
     topbar:
     {
-        // position:"fixed",
+        // position:"absolute",
         // top : 80, left : 70,
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: '#2F4052',
-        height: 45,
-        marginTop:15,
-        // paddingBottom: 15,
+        height: 55,
+        // marginTop:15,
+        // marginVertical:15,
+        marginBottom: 15,
         paddingLeft: 15,
-        paddingRight: 25,
+        // paddingRight: 25,
         // borderRadius : 15,
-        overflow: "hidden",
-        width:"100%"
+        // overflow: "hidden",
+        // width:"100%"
     
+        // flex: 1,
     },
     msgcontainer : {
         flex: 1,
-        justifyContent: "flex-end",
+        // justifyContent: "flex-end",
         // backgroundColor: AppStyles.colour.chatBg,
-        alignItems: "center",
+        // alignItems: "center",
     },
     sendMessageContainer: {
-        flex: 1,
+        // flex: 1,
         borderRadius: 15,
         padding: 20,
         width: "100%",
@@ -240,7 +257,7 @@ const styles = StyleSheet.create(
       },
       typeMessage: {
         flex: 1,
-        fontSize: 13,
+        fontSize: 16,
         // fontFamily: AppStyles.font.poppinsRegular,
         // color: "darkGreen",
       },

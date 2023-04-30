@@ -54,6 +54,7 @@ const ProfilePage = ({navigation}) => {
 
     const handleLogout = () => {
       deleteData('user');
+      deleteData('chatroomid');
       setUser(null);
       navigation.navigate('LoginPage')
     }

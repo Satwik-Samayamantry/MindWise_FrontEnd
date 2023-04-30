@@ -21,7 +21,8 @@ const OfflinePage = ({navigation}) => {
     const [feelings,setfeelings] = useState('');
 
     const handleSubmit = async () => {
-        storeData('cache',{"feelings":feelings,"timestamp":Date()})
+        const currentDate = new Date();
+        storeData('cache',{"feelings":feelings,"timestamp":currentDate.toISOString()})
         setfeelings('');
         // const data1 = await getData("cache");
         // console.log(Date())
