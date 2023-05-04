@@ -89,9 +89,11 @@ const RegisterPage = ({navigation}) => {
   }
 
 
-  const handleRegister =  () => {
+  const handleRegister =  async () => {
+    let jt = await getData('jwt-token')
+    const header={'Authorization':jt}
 
-    axios.post(global.ngroklink+'/login', {"username":username, "role":"Patient", "password" : password}
+    axios.post(global.ngroklink+'/login', {"username":username, "role":"Patient", "password" : password}, {headers: header}
     ).then((response) => {
       // Alert.alert('Success', 'User registered successfully');
       // console.log(dob)
@@ -103,7 +105,7 @@ const RegisterPage = ({navigation}) => {
         "gender" :  gender, 
         "username":username,
         "status" :  1
-      }).then((response) => {
+      }, {headers: header}).then((response) => {
         // Alert.alert('Success', 'User registered successfully');
         setUser(response.data);
         storeData('user',response.data);

@@ -31,19 +31,41 @@ const LoginPage = ({navigation}) => {
     sethidepassword(!hidepassword)
   }
 
-  const handleLogin =  () => {
-    axios.post(global.ngroklink+'/validate', {"username":username, "role":"Patient", "password" : password}
+  const getpatientdetails = async () =>{
+    let jt = await getData('jwt-token')
+    // console.log(jt)
+
+    axios.get(global.ngroklink+'/getpatientbyusername', {params:{"username":username},headers:{ 'Authorization' : jt }}
+    ).then((response11)=>{
+
+    console.log(response11.data)
+    setUser(response11.data);
+    storeData('user',response11.data);
+    navigation.navigate('App');
+}).catch((error) => {
+  // Alert.alert('Error', error.message);
+  console.log(error.message)
+});
+  }
+
+  const getjwt = async () => {
+    await axios.post(global.ngroklink + "/signin", {"username":username, "password": password}
+    ).then((response1) => {
+      // console.log("haha  " +response1.data["token"])
+      storeData("jwt-token", response1.data["token"]);
+    })
+
+    getpatientdetails();
+  }
+
+  const handleLogin = async () => {
+    await axios.post(global.ngroklink+'/validate', {"username":username, "role":"Patient", "password" : password}
     ).then((response) => {
       
       if(response.data)
       {
-        axios.get(global.ngroklink+'/getpatientbyusername', {params:{"username":username}}).then((response11)=>{
-
-          // console.log(response11.data)
-          setUser(response11.data);
-          storeData('user',response11.data);
-          navigation.navigate('App');
-        })
+        
+                getjwt();
       }
       else
       {

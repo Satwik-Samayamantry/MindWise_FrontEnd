@@ -41,7 +41,10 @@ const HomePage = ({navigation}) => {
 
     useEffect(()=>{
       const updatestatus = async () =>{
-        await axios.post(global.ngroklink+'/setstatus',{"username":user?.username, "status":status}
+        let jt = await getData('jwt-token')
+        const header={'Authorization':jt}
+
+        await axios.post(global.ngroklink+'/setstatus',{"username":user?.username, "status":status}, {headers: header}
         ).then((response) => {
           // console.log(response)
         }).catch((error) => {
@@ -50,7 +53,7 @@ const HomePage = ({navigation}) => {
         });
       };
       updatestatus();
-    },[])
+    },[status])
     
     useEffect(()=>{
       const fetchUserData = async () => {
@@ -63,7 +66,8 @@ const HomePage = ({navigation}) => {
     
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get(global.ngroklink+'/getexercisesfrompid',{params: {patientid: user?.patientID}});
+        let jt = await getData('jwt-token')
+        const result = await axios.get(global.ngroklink+'/getexercisesfrompid',{params: {patientid: user?.patientID},headers:{ 'Authorization' : jt }});
         setData(result.data);
         // console.log(result.data)
       };
@@ -73,7 +77,8 @@ const HomePage = ({navigation}) => {
 
     useEffect(()=>{
       const fetchDoctor = async () => {
-        axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID}}
+        let jt = await getData('jwt-token')
+        axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID},headers:{ 'Authorization' : jt }}
         ).then((response)=>{
           setdocid(response.data)
         })
@@ -100,7 +105,11 @@ const HomePage = ({navigation}) => {
             console.log(savedText)
             if(docid)
             {
-              const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp});
+              let jt = await getData('jwt-token')
+              const header={'Authorization':jt}
+      
+      
+              const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp},{headers:header});
               await deleteData("cache");
     
             }
@@ -119,10 +128,11 @@ const HomePage = ({navigation}) => {
           // sendDataToBackend();
             const savedText = await getData("cache");
             if (savedText!==null) {
-                console.log(savedText)
+                // console.log(savedText)
                 if(docid)
                 {
-                  const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp});
+                console.log(savedText)
+                // const response = await axios.post(global.ngroklink+'/logfeelings', { "patientID" : user?.patientID, "doctorID": docid,"description" : savedText.feelings, "timestamp":savedText.timestamp});
                   await deleteData("cache");
         
                 }
@@ -132,7 +142,7 @@ const HomePage = ({navigation}) => {
       };
       fetchNetworkStatus();
       
-    }, [docid]);
+    }, []);
   
     
 

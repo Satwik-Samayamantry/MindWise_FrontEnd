@@ -2,6 +2,7 @@ import React, { useEffect, useContext} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 import '../global/ngrok.js'
 
 const { width, height } = Dimensions.get('window');
@@ -24,10 +25,13 @@ const SelectDoctor1 = ({navigation}) => {
     navigation.navigate('SelectDoctor2')
   };
 
-  const handleNo = () => {
+  const handleNo = async () => {
     console.log('No');
     console.log(user)
-    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": null, "patientID": user?.patientID, "summary": null}
+    let jt = await getData('jwt-token')
+    const header={'Authorization':jt}
+
+    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": null, "patientID": user?.patientID, "summary": null}, {headers: header}
     ).then((response) => {
       console.log(response.data)
       if(response.data)

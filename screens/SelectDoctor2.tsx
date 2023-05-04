@@ -37,20 +37,22 @@ const SelectDoctor2 = ({navigation}) => {
     navigation.navigate('DoctorPage')
   };
 
-  const handleAuto = () => {
+  const handleAuto = async () => {
     console.log('No');
     const doctor = doc_data[  
       Math.floor(Math.random() * doc_data.length)
     ]
+    let jt = await getData('jwt-token')
+    const header={'Authorization':jt}
 
-    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}
+    axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctor?.doctorID, "patientID": user?.patientID, "summary": null}, {headers: header}
     ).then((response) => {
       console.log("hello"+response.data)
       if(response.data)
       {
         console.log("doctorid :"+ doctor?.doctorID)
         console.log("patientid:"+user?.patientID)
-        axios.post(global.ngroklink+'/createchat', {params:{doctorid : doctor?.doctorID, patientid:user?.patientID}}
+        axios.post(global.ngroklink+'/createchat', {params:{doctorid : doctor?.doctorID, patientid:user?.patientID},headers:{ 'Authorization' : jt }}
         ).then((reply)=>{
             storeData('chatroomid',{"chatroomid":reply.data})
 

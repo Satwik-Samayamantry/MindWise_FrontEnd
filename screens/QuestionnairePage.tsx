@@ -1,6 +1,5 @@
 import React, { useState  } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert,ScrollView } from 'react-native';
-import axios from 'axios';
 import * as Progress from 'react-native-progress';
 import Icon from 'react-native-vector-icons/Ionicons';  
 

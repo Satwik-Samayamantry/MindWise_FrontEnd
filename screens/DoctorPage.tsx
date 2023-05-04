@@ -26,7 +26,10 @@ const DoctorPage = ({navigation}) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await axios.get(global.ngroklink+'/doctors');
+        let jt = await getData('jwt-token')
+        const header={'Authorization':jt}
+  
+        const result = await axios.get(global.ngroklink+'/doctors',{headers:header});
         setData(result.data);
       };
 
@@ -34,8 +37,11 @@ const DoctorPage = ({navigation}) => {
     }, []);
 
 
-    const handleButtonPress = (doctorId) => {
-      axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctorId, "patientID": user?.patientID, "summary": null}
+    const handleButtonPress = async (doctorId) => {
+      let jt = await getData('jwt-token')
+      const header={'Authorization':jt}
+
+      axios.post(global.ngroklink+'/assign-doctor', {"doctorID": doctorId, "patientID": user?.patientID, "summary": null},{headers:header}
     ).then((response) => {
       console.log(response.data)
       if(response.data)
@@ -43,7 +49,7 @@ const DoctorPage = ({navigation}) => {
         console.log("doctorid :"+ doctorId)
         console.log("patientid:"+user?.patientID)
 
-        axios.post(global.ngroklink+'/createchat', {"doctorid" : doctorId, "patientid": user.patientID}
+        axios.post(global.ngroklink+'/createchat', {"doctorid" : doctorId, "patientid": user.patientID},{headers:header}
         ).then((reply)=>{
             storeData('chatroomid',{"chatroomid":reply.data})
 

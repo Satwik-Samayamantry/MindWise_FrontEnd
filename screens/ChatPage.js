@@ -74,16 +74,19 @@ const ChatPage = ({navigation}) => {
             console.log(docid)
             console.log(currentMessage)
             var data={chatroomid:chatid.chatroomid, senderid:user.patientID, recipientid:docid, content:currentMessage, readreceipt:false}
-            axios.post(global.ngroklink+"/addmessage",data)
+            let jt = await getData('jwt-token')
+            const header={'Authorization':jt}
+            axios.post(global.ngroklink+"/addmessage",data,header)
             setCurrentMessage("")
     }
 
     useEffect(()=>{
         const fetchDoctor = async () => {
-          axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID}}
+        let jt = await getData('jwt-token')
+        axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID},headers:{ 'Authorization' : jt }}
           ).then((response)=>{
             setdocid(response.data)
-            axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : response.data}}
+            axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : response.data},headers:{ 'Authorization' : jt }}
             ).then((response11)=>{
                 setdocname(response11.data)
             })
@@ -99,8 +102,9 @@ const ChatPage = ({navigation}) => {
     useEffect(()=>{
         const getmessages = async () => {
             const chatid = await getData("chatroomid")
-            // console.log(chatid.chatroomid)
-            axios.get(global.ngroklink+'/getallmessages',{params:{chatroomid:chatid.chatroomid}}
+            let jt = await getData('jwt-token')
+        // console.log(chatid.chatroomid)
+            axios.get(global.ngroklink+'/getallmessages',{params:{chatroomid:chatid.chatroomid},headers:{ 'Authorization' : jt }}
             ).then((response)=>{
                 if(response.data)
                 {

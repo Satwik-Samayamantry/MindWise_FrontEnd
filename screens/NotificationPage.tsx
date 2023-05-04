@@ -3,8 +3,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import {UserContext, UserContextProvider} from '../global/UserContext';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 import * as Progress from 'react-native-progress';
 import Icon from 'react-native-vector-icons/Ionicons';  
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const { width, height } = Dimensions.get('window');
@@ -26,7 +28,8 @@ const NotificationsPage = ({navigation}) => {
     useEffect(()=>{
         const fetchNotification = async () => {
             // console.log(user?.patientID);
-        const result = await axios.get(global.ngroklink+'/getnotificationsbypatientid',{params:{patientID : user?.patientID}});
+        let jt = await getData('jwt-token')
+        const result = await axios.get(global.ngroklink+'/getnotificationsbypatientid',{params:{patientID : user?.patientID},headers:{ 'Authorization' : jt }});
         setNotifications(result.data);
         // console.log(result.data)
         };
@@ -40,10 +43,11 @@ const NotificationsPage = ({navigation}) => {
         {/* <Text style={{color:'#2EEE9D',fontSize:38,fontWeight:'bold'}}> Notifications Page</Text> */}
         <Image source = {require('../logo1.png')} style={{ width: 100, height: 100, top : 20, left : 10,resizeMode: 'contain'}}/>
         <Text style={styles.startText}> Notifications</Text>
+        <ScrollView>
 
         {notifications.map(notification => 
                 <TouchableOpacity
-                key = {notification.description}
+                key = {notification.notificationID}
                 style={styles.doctorbutton}>
                 {/* onPress = {() => connectToDevice(device)}> */}
                 <View style={styles.buttonlist}>
@@ -61,7 +65,7 @@ const NotificationsPage = ({navigation}) => {
                 </View>
                 </View>
                 </TouchableOpacity>)}
-
+                </ScrollView>
       </View>
     );
 

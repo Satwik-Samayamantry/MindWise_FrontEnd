@@ -1,1 +1,1 @@
-global.ngroklink = "https://6a65-103-156-19-229.ngrok-free.app"
+global.ngroklink = "https://4ed6-2a09-bac5-3b4b-1282-00-1d8-1fa.ngrok-free.app"

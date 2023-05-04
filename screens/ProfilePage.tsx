@@ -59,11 +59,14 @@ const ProfilePage = ({navigation}) => {
       navigation.navigate('LoginPage')
     }
 
-    const handleSubmit = () => {
-      console.log(user.username)
-      console.log(oldPassword)
-      console.log(newPassword)
-      axios.post(global.ngroklink+'/updatePassword', {"username":user.username, "role":"Patient", "oldpassword" : oldPassword, "newpassword" : newPassword}
+    const handleSubmit = async () => {
+      // console.log(user.username)
+      // console.log(oldPassword)
+      // console.log(newPassword)
+      let jt = await getData('jwt-token')
+      const header={'Authorization':jt}
+
+      axios.post(global.ngroklink+'/updatePassword', {"username":user.username, "role":"Patient", "oldpassword" : oldPassword, "newpassword" : newPassword}, {headers: header}
       ).then((response) => {
         if(response.data)
         {
@@ -80,9 +83,10 @@ const ProfilePage = ({navigation}) => {
 
       useEffect(()=>{
         const fetchDoctor = async () => {
-          axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID}}
+        let jt = await getData('jwt-token')
+        axios.get(global.ngroklink+'/getdocidbypid',{params:{pid:user?.patientID},headers:{ 'Authorization' : jt }}
           ).then((response)=>{
-            axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : response.data}}
+            axios.get(global.ngroklink+'/getdocnamebydocid', {params:{docid : response.data},headers:{ 'Authorization' : jt }}
             ).then((response11)=>{
               setdoctorname(response11.data)
             })

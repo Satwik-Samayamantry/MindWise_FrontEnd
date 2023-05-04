@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
 import * as Progress from 'react-native-progress';
 import {UserContext, UserContextProvider} from '../global/UserContext';
 import {storeData,getData,deleteData} from '../global/LocalStore'

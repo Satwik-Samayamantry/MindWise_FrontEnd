@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Dimensions, Image, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import {storeData,getData,deleteData} from '../global/LocalStore'
 import {UserContext, UserContextProvider} from '../global/UserContext';
 
 
@@ -25,7 +26,8 @@ const TaskPage = ({navigation}) => {
 
   useEffect(()=>{
     const gettaskdetails = async () => {
-        await axios.get(global.ngroklink+'/exercisebyid',{params:{exerciseid:currentTask}}
+        let jt = await getData('jwt-token')
+        await axios.get(global.ngroklink+'/exercisebyid',{params:{exerciseid:currentTask},headers:{ 'Authorization' : jt }}
         ).then((response)=>{
           setTaskdata(response.data);
         })
